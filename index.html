@@ -1240,20 +1240,98 @@ code { font-family: var(--mono); }
 }
 
 </style>
+  <style>
+  /* ── PRACTICE SECTION ───────────────────── */
+  .practice-section { background: var(--bg); border-top: 1px solid var(--border); }
+  .practice-header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 52px 5% 40px; }
+  .practice-header-inner { max-width: 900px; margin: 0 auto; }
+  .page-title { font-family: var(--serif); font-size: clamp(1.9rem,4vw,2.8rem); font-weight: 900; letter-spacing: -0.03em; color: var(--ink); line-height: 1.1; margin-bottom: 10px; }
+  .page-sub { color: var(--muted); font-size: 0.95rem; max-width: 560px; margin-bottom: 28px; }
+  .stats-bar { display:flex; gap:32px; flex-wrap:wrap; padding:18px 24px; background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius-lg); align-items:center; }
+  .stat-item { display:flex; flex-direction:column; gap:1px; }
+  .stat-num { font-family:var(--serif); font-size:1.5rem; font-weight:700; color:var(--ink); letter-spacing:-0.03em; line-height:1; }
+  .stat-label { font-size:0.72rem; color:var(--muted); font-weight:500; letter-spacing:0.04em; text-transform:uppercase; }
+  .stat-divider { width:1px; height:36px; background:var(--border2); }
+  .overall-bar-wrap { flex:1; min-width:180px; }
+  .overall-bar-label { font-size:0.78rem; color:var(--muted); margin-bottom:6px; display:flex; justify-content:space-between; }
+  .overall-bar { height:8px; background:var(--border); border-radius:99px; overflow:hidden; }
+  .overall-bar-fill { height:100%; background:linear-gradient(90deg,var(--green),#2ecc89); border-radius:99px; transition:width 0.8s ease; }
+  .roadmap-wrap { max-width:900px; margin:0 auto; padding:48px 5% 100px; }
+  .level-block { margin-bottom:8px; position:relative; }
+  .level-block::before { content:''; position:absolute; left:23px; top:56px; bottom:0; width:2px; background:var(--border); z-index:0; }
+  .level-block:last-child::before { display:none; }
+  .level-header { display:flex; align-items:center; gap:16px; padding:0 0 20px; position:relative; z-index:1; cursor:pointer; user-select:none; }
+  .level-badge { width:48px; height:48px; flex-shrink:0; border-radius:50%; background:var(--surface); border:2px solid var(--border2); display:flex; align-items:center; justify-content:center; font-family:var(--serif); font-size:1rem; font-weight:700; color:var(--ink2); transition:border-color .2s,background .2s,color .2s; position:relative; z-index:2; }
+  .level-block.unlocked .level-badge,.level-block.active .level-badge { border-color:var(--accent); color:var(--accent); }
+  .level-block.completed .level-badge { background:var(--green); border-color:var(--green); color:white; }
+  .level-meta { flex:1; }
+  .level-name { font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--ink); line-height:1.2; margin-bottom:2px; }
+  .level-desc { font-size:0.8rem; color:var(--muted); }
+  .level-progress-pill { font-size:0.72rem; font-weight:700; padding:4px 12px; border-radius:99px; background:var(--bg2); color:var(--muted); white-space:nowrap; letter-spacing:0.04em; transition:background .2s,color .2s; }
+  .level-block.completed .level-progress-pill { background:var(--green-bg); color:var(--green); }
+  .level-block.active .level-progress-pill { background:var(--accent-bg); color:var(--accent); }
+  .level-chevron { color:var(--faint); font-size:0.8rem; transition:transform .2s; flex-shrink:0; }
+  .level-block.open .level-chevron { transform:rotate(90deg); }
+  .level-body { padding-left:64px; overflow:hidden; max-height:0; transition:max-height .35s ease; }
+  .level-block.open .level-body { max-height:3000px; }
+  .topic-row { position:relative; margin-bottom:10px; }
+  .topic-row::before { content:''; position:absolute; left:-42px; top:24px; width:10px; height:10px; border-radius:50%; background:var(--border2); border:2px solid var(--bg); transition:background .2s; z-index:2; }
+  .topic-row::after { content:''; position:absolute; left:-32px; top:28px; width:32px; height:2px; background:var(--border); }
+  .topic-row.t-solved::before { background:var(--green); }
+  .topic-row.t-partial::before { background:var(--amber); }
+  .topic-row.t-active::before { background:var(--accent); }
+  .topic-card-tree { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; transition:border-color .15s,box-shadow .15s; cursor:pointer; }
+  .topic-card-tree:hover { border-color:var(--accent); box-shadow:var(--shadow); }
+  .topic-row.t-solved .topic-card-tree { border-color:#b3ddc9; }
+  .topic-row.t-active .topic-card-tree { border-color:rgba(201,75,12,0.35); }
+  .topic-card-top { display:flex; align-items:center; gap:16px; padding:16px 20px; user-select:none; }
+  .topic-icon-wrap { width:42px; height:42px; flex-shrink:0; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.3rem; background:var(--bg2); }
+  .topic-info { flex:1; min-width:0; }
+  .topic-name-tree { font-family:var(--sans); font-size:0.97rem; font-weight:700; color:var(--ink); line-height:1.2; margin-bottom:4px; }
+  .topic-chips { display:flex; gap:6px; flex-wrap:wrap; }
+  .chip { font-size:0.68rem; font-weight:600; padding:2px 8px; border-radius:4px; white-space:nowrap; background:var(--bg2); color:var(--muted); }
+  .chip.easy { background:var(--green-bg); color:var(--green); }
+  .chip.med  { background:var(--amber-bg); color:var(--amber); }
+  .chip.hard { background:var(--red-bg);   color:var(--red); }
+  .topic-right { display:flex; flex-direction:column; align-items:flex-end; gap:6px; flex-shrink:0; }
+  .topic-counts { font-size:0.75rem; color:var(--muted); text-align:right; }
+  .topic-counts strong { color:var(--ink); font-weight:700; }
+  .topic-progress-bar { width:80px; height:5px; background:var(--bg2); border-radius:99px; overflow:hidden; }
+  .topic-progress-fill { height:100%; background:linear-gradient(90deg,var(--green),#2ecc89); border-radius:99px; transition:width .5s ease; }
+  .topic-expand-btn { background:none; border:none; cursor:pointer; color:var(--faint); font-size:0.75rem; padding:4px; transition:color .15s,transform .2s; flex-shrink:0; }
+  .topic-expand-btn:hover { color:var(--ink); }
+  .topic-row.open .topic-expand-btn { transform:rotate(180deg); }
+  .problem-list { border-top:1px solid var(--border); max-height:0; overflow:hidden; transition:max-height .3s ease; }
+  .topic-row.open .problem-list { max-height:2000px; }
+  .problem-item { display:flex; align-items:center; gap:12px; padding:10px 20px; border-bottom:1px solid var(--border); font-size:0.86rem; transition:background .1s; text-decoration:none; color:var(--ink2); }
+  .problem-item:last-child { border-bottom:none; }
+  .problem-item:hover { background:var(--bg2); }
+  .p-status { width:14px; height:14px; flex-shrink:0; border-radius:50%; border:2px solid var(--border2); background:transparent; cursor:pointer; transition:background .15s,border-color .15s; position:relative; }
+  .p-status.solved { background:var(--green); border-color:var(--green); }
+  .p-status.solved::after { content:'\2713'; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:white; font-size:8px; font-weight:700; line-height:1; }
+  .p-num { font-family:var(--mono); font-size:0.72rem; color:var(--faint); width:32px; flex-shrink:0; }
+  .p-name { flex:1; font-weight:500; color:var(--ink2); }
+  .p-diff { font-size:0.72rem; font-weight:700; flex-shrink:0; }
+  .diff-e { color:var(--green); } .diff-m { color:var(--amber); } .diff-h { color:var(--red); }
+  .p-read { font-size:0.72rem; font-weight:600; color:var(--accent); flex-shrink:0; }
+  .checkpoint { display:flex; align-items:center; gap:16px; padding:16px 0; margin-bottom:8px; }
+  .checkpoint-badge { width:48px; height:48px; flex-shrink:0; border-radius:50%; background:var(--bg2); border:2px dashed var(--border2); display:flex; align-items:center; justify-content:center; font-size:1.1rem; }
+  .checkpoint-text { font-size:0.82rem; }
+  .checkpoint-text strong { color:var(--ink); font-weight:700; display:block; margin-bottom:2px; }
+  .checkpoint-text span { color:var(--muted); }
+  </style>
 </head>
+
 <body>
 
 <!-- NAV -->
 <nav class="site-nav">
   <div class="nav-logo">Code<span>Path</span></div>
   <ul class="nav-links">
-    <li><a href="problems.html">Problems</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#topics">Topics</a></li>
-    <li><a href="#" title="Solved problems" style="color:var(--muted);font-size:0.82rem;">
-       <span id="solved-counter">0</span> solved
-    </a></li>
-    <li><a href="problems.html" class="nav-cta">Start Free </a></li>
+    <li><a href="#practice">Practice</a></li>
+    <li><a href="#why">Why Written?</a></li>
+    <li><a href="#" style="color:var(--muted);font-size:0.82rem;">✓ <span id="solved-counter">0</span> solved</a></li>
+    <li><a href="#practice" class="nav-cta">Start Free →</a></li>
   </ul>
 </nav>
 
@@ -1274,7 +1352,7 @@ code { font-family: var(--mono); }
         Deep written editorials for every problem. Clear explanations, multiple approaches, complexity analysis  all free. No subscription required. Ever.
       </p>
       <div class="hero-actions">
-        <a href="problems.html" class="btn btn--primary">Start the Roadmap </a>
+        <a href="#practice" class="btn btn--primary">Start Practicing →</a>
         <a href="#why" class="btn btn--outline">Why written? </a>
       </div>
       <div class="hero-proof">
@@ -1405,175 +1483,45 @@ code { font-family: var(--mono); }
   </div>
 </section>
 
-<!-- 
-     TOPICS
- -->
-<section class="topics-section" id="topics">
-  <div class="topics-header">
-    <div>
-      <div class="section-eyebrow">Curriculum</div>
-      <h2 class="section-title">Every topic. Depth over breadth.</h2>
+<!-- PRACTICE -->
+<section class="practice-section" id="practice">
+  <div class="practice-header">
+    <div class="practice-header-inner">
+      <div class="section-eyebrow">Structured Practice Path</div>
+      <h2 class="page-title">DSA Practice — Zero to FAANG Ready</h2>
+      <p class="page-sub">8 levels &middot; 16 topics &middot; 500+ problems. Follow the tree in order &mdash; written editorials, all free.</p>
+      <div class="stats-bar">
+        <div class="stat-item">
+          <div class="stat-num" id="total-solved">0</div>
+          <div class="stat-label">Solved</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <div class="stat-num">500<span style="color:var(--accent)">+</span></div>
+          <div class="stat-label">Total problems</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <div class="stat-num">8</div>
+          <div class="stat-label">Levels</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <div class="stat-num" id="streak-num">0</div>
+          <div class="stat-label">🔥 Day streak</div>
+        </div>
+        <div class="overall-bar-wrap">
+          <div class="overall-bar-label">
+            <span>Overall progress</span>
+            <span id="pct-label">0%</span>
+          </div>
+          <div class="overall-bar"><div class="overall-bar-fill" id="overall-fill" style="width:0%"></div></div>
+        </div>
+      </div>
     </div>
-    <a href="problems.html" class="btn btn--outline">View all problems </a>
   </div>
-
-  <div class="topics-grid">
-    <a href="problems.html?topic=arrays" class="topic-card reveal">
-      <div class="topic-icon">ð</div>
-      <div class="topic-name">Arrays & Hashing</div>
-      <div class="topic-meta">
-        <span class="topic-count">48 problems</span>
-        <span class="badge badge--easy" style="font-size:0.65rem;">Beginner</span>
-      </div>
-    </a>
-    <a href="problems.html?topic=two-pointers" class="topic-card reveal">
-      <div class="topic-icon"></div>
-      <div class="topic-name">Two Pointers</div>
-      <div class="topic-meta">
-        <span class="topic-count">22 problems</span>
-        <span class="badge badge--easy" style="font-size:0.65rem;">Beginner</span>
-      </div>
-    </a>
-    <a href="problems.html?topic=sliding-window" class="topic-card reveal">
-      <div class="topic-icon">ð</div>
-      <div class="topic-name">Sliding Window</div>
-      <div class="topic-meta">
-        <span class="topic-count">18 problems</span>
-        <span class="badge badge--medium" style="font-size:0.65rem;">Intermediate</span>
-      </div>
-    </a>
-    <a href="problems.html?topic=binary-search" class="topic-card reveal">
-      <div class="topic-icon">ð</div>
-      <div class="topic-name">Binary Search</div>
-      <div class="topic-meta">
-        <span class="topic-count">24 problems</span>
-        <span class="badge badge--medium" style="font-size:0.65rem;">Intermediate</span>
-      </div>
-    </a>
-    <a href="problems.html?topic=linked-list" class="topic-card reveal">
-      <div class="topic-icon">ð</div>
-      <div class="topic-name">Linked Lists</div>
-      <div class="topic-meta">
-        <span class="topic-count">31 problems</span>
-        <span class="badge badge--medium" style="font-size:0.65rem;">Intermediate</span>
-      </div>
-    </a>
-    <a href="problems.html?topic=trees" class="topic-card reveal">
-      <div class="topic-icon">ð</div>
-      <div class="topic-name">Binary Trees</div>
-      <div class="topic-meta">
-        <span class="topic-count">45 problems</span>
-        <span class="badge badge--medium" style="font-size:0.65rem;">Intermediate</span>
-      </div>
-    </a>
-    <a href="problems.html?topic=dp" class="topic-card reveal">
-      <div class="topic-icon">ð</div>
-      <div class="topic-name">Dynamic Programming</div>
-      <div class="topic-meta">
-        <span class="topic-count">65 problems</span>
-        <span class="badge badge--hard" style="font-size:0.65rem;">Advanced</span>
-      </div>
-    </a>
-    <a href="problems.html?topic=graphs" class="topic-card reveal">
-      <div class="topic-icon">ð</div>
-      <div class="topic-name">Graphs</div>
-      <div class="topic-meta">
-        <span class="topic-count">52 problems</span>
-        <span class="badge badge--hard" style="font-size:0.65rem;">Advanced</span>
-      </div>
-    </a>
-  </div>
+  <div class="roadmap-wrap" id="roadmap-root"></div>
 </section>
-
-<!-- 
-     ROADMAP
- -->
-<section class="roadmap-section" id="roadmap">
-  <div class="roadmap-inner">
-    <div class="roadmap-header">
-      <div class="section-eyebrow reveal">The Path</div>
-      <h2 class="section-title reveal" style="max-width:480px;">A structured path from scratch to FAANG-ready.</h2>
-    </div>
-
-    <div class="phases">
-      <div class="phase reveal">
-        <div class="phase-left">
-          <div class="phase-num">1</div>
-          <div class="phase-line"></div>
-        </div>
-        <div class="phase-content">
-          <div class="phase-tag">Weeks 13</div>
-          <div class="phase-title">Foundations</div>
-          <p class="phase-desc">Build the mental models. Arrays, hashing, two pointers, and sliding window. Most interview problems reduce to patterns from this phase. Do not skip basics  they compound.</p>
-          <div class="phase-topics">
-            <span class="phase-topic-chip">Arrays & Hashing</span>
-            <span class="phase-topic-chip">Two Pointers</span>
-            <span class="phase-topic-chip">Sliding Window</span>
-            <span class="phase-topic-chip">Stack</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="phase reveal">
-        <div class="phase-left">
-          <div class="phase-num">2</div>
-          <div class="phase-line"></div>
-        </div>
-        <div class="phase-content">
-          <div class="phase-tag">Weeks 47</div>
-          <div class="phase-title">Core Data Structures</div>
-          <p class="phase-desc">The structures that show up in 70% of interviews. Linked lists, binary trees, BSTs, heaps. Learn traversals, insertions, and the classic problems that test each structure.</p>
-          <div class="phase-topics">
-            <span class="phase-topic-chip">Linked Lists</span>
-            <span class="phase-topic-chip">Binary Trees</span>
-            <span class="phase-topic-chip">BST</span>
-            <span class="phase-topic-chip">Heap / Priority Queue</span>
-            <span class="phase-topic-chip">Tries</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="phase reveal">
-        <div class="phase-left">
-          <div class="phase-num">3</div>
-          <div class="phase-line"></div>
-        </div>
-        <div class="phase-content">
-          <div class="phase-tag">Weeks 812</div>
-          <div class="phase-title">Algorithms</div>
-          <p class="phase-desc">Graphs, DP, backtracking. These are the hard-round problems. Spend the most time here. Learn BFS/DFS patterns, then DP state design, then pruning in backtracking.</p>
-          <div class="phase-topics">
-            <span class="phase-topic-chip">Graphs  BFS/DFS</span>
-            <span class="phase-topic-chip">Dynamic Programming</span>
-            <span class="phase-topic-chip">Backtracking</span>
-            <span class="phase-topic-chip">Greedy</span>
-            <span class="phase-topic-chip">Bit Manipulation</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="phase reveal">
-        <div class="phase-left">
-          <div class="phase-num">4</div>
-          <div class="phase-line"></div>
-        </div>
-        <div class="phase-content">
-          <div class="phase-tag">Weeks 1316</div>
-          <div class="phase-title">Interview Sprint</div>
-          <p class="phase-desc">Revise with company-tagged lists. Practice CS fundamentals (OS, DBMS, CN). Mock interviews. System design basics. This is your final polish before the real rounds.</p>
-          <div class="phase-topics">
-            <span class="phase-topic-chip">Company-tagged Revision</span>
-            <span class="phase-topic-chip">OS Fundamentals</span>
-            <span class="phase-topic-chip">DBMS & SQL</span>
-            <span class="phase-topic-chip">Computer Networks</span>
-            <span class="phase-topic-chip">OOPs & LLD</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- 
      EDITORIAL EXCERPTS
  -->
@@ -1584,7 +1532,7 @@ code { font-family: var(--mono); }
   </div>
 
   <div class="editorial-grid">
-    <a href="problems/two-sum.html" class="editorial-card reveal">
+    <a href="two-sum.html" class="editorial-card reveal">
       <div class="editorial-card-top">
         <div class="editorial-card-tags">
           <span class="badge badge--easy">Easy</span>
@@ -1602,7 +1550,7 @@ code { font-family: var(--mono); }
       </div>
     </a>
 
-    <a href="problems/best-time-to-buy-stock.html" class="editorial-card reveal">
+    <a href="two-sum.html" class="editorial-card reveal">
       <div class="editorial-card-top">
         <div class="editorial-card-tags">
           <span class="badge badge--easy">Easy</span>
@@ -1620,7 +1568,7 @@ code { font-family: var(--mono); }
       </div>
     </a>
 
-    <a href="problems/valid-parentheses.html" class="editorial-card reveal">
+    <a href="two-sum.html" class="editorial-card reveal">
       <div class="editorial-card-top">
         <div class="editorial-card-tags">
           <span class="badge badge--easy">Easy</span>
@@ -1638,7 +1586,7 @@ code { font-family: var(--mono); }
       </div>
     </a>
 
-    <a href="problems/longest-substring-without-repeating.html" class="editorial-card reveal">
+    <a href="two-sum.html" class="editorial-card reveal">
       <div class="editorial-card-top">
         <div class="editorial-card-tags">
           <span class="badge badge--medium">Medium</span>
@@ -1669,8 +1617,8 @@ code { font-family: var(--mono); }
   </h2>
   <p class="cta-sub">500+ written editorials. Structured roadmap. Company tags. All free, all the time.</p>
   <div class="cta-buttons">
-    <a href="problems.html" class="btn btn--inverted">Browse All Problems </a>
-    <a href="#roadmap" class="btn--ghost-light">See the Roadmap</a>
+    <a href="#practice" class="btn btn--inverted">Start Practicing →</a>
+    <a href="#why" class="btn--ghost-light">Why Written?</a>
   </div>
   <p class="cta-footnote">Built by engineers frustrated by paywalls.  Star us on GitHub.</p>
 </section>
@@ -1685,8 +1633,7 @@ code { font-family: var(--mono); }
     <div class="footer-col">
       <h5>Learn</h5>
       <ul>
-        <li><a href="problems.html">All Problems</a></li>
-        <li><a href="#roadmap">Roadmap</a></li>
+        <li><a href="#practice">Practice</a></li>
         <li><a href="#">System Design</a></li>
         <li><a href="#">CS Fundamentals</a></li>
         <li><a href="#">OOPs & LLD</a></li>
@@ -1941,19 +1888,265 @@ function buildTOC(contentSelector, tocSelector) {
   headings.forEach(h => obs.observe(h));
 }
 
+// ── ROADMAP DATA ──────────────────────────
+const ROADMAP = [
+  { id:'l1', level:1, name:'Foundations', desc:'Weeks 1–2 · Build your problem-solving instincts', checkpoint:'No prerequisites. Start here.', topics:[
+    { id:'time-complexity', icon:'⏱', name:'Time & Space Complexity', articles:6, problems:15, difficulty:'easy', desc:'Big-O notation, best/worst/average case', problems_list:[
+      {num:'—',name:'Analyze Sorting Algorithms',diff:'E',slug:'analyze-sorting'},
+      {num:'—',name:'Count Operations in Loop',diff:'E',slug:'count-ops'},
+      {num:'—',name:'Recursive Complexity',diff:'M',slug:'recursive-complexity'},
+    ]},
+    { id:'arrays', icon:'📐', name:'Arrays & Hashing', articles:12, problems:44, difficulty:'easy', desc:'The foundation of everything. Master before moving on.', problems_list:[
+      {num:'1',name:'Two Sum',diff:'E',slug:'two-sum'},
+      {num:'217',name:'Contains Duplicate',diff:'E',slug:'contains-duplicate'},
+      {num:'238',name:'Product of Array Except Self',diff:'M',slug:'product-except-self'},
+      {num:'49',name:'Group Anagrams',diff:'M',slug:'group-anagrams'},
+      {num:'347',name:'Top K Frequent Elements',diff:'M',slug:'top-k-frequent'},
+      {num:'128',name:'Longest Consecutive Sequence',diff:'M',slug:'longest-consecutive'},
+    ]},
+  ]},
+  { id:'l2', level:2, name:'Pointers & Windows', desc:'Weeks 2–3 · Linear scan patterns', checkpoint:'Solve 80% of Level 1 before continuing.', topics:[
+    { id:'two-pointers', icon:'⇔️', name:'Two Pointers', articles:8, problems:22, difficulty:'easy', desc:'Shrink/expand pattern. Eliminates one loop.', problems_list:[
+      {num:'125',name:'Valid Palindrome',diff:'E',slug:'valid-palindrome'},
+      {num:'15',name:'3Sum',diff:'M',slug:'3sum'},
+      {num:'11',name:'Container With Most Water',diff:'M',slug:'container-with-most-water'},
+      {num:'42',name:'Trapping Rain Water',diff:'H',slug:'trapping-rain-water'},
+    ]},
+    { id:'sliding-window', icon:'🪟', name:'Sliding Window', articles:7, problems:18, difficulty:'medium', desc:'Maintain a window of elements.', problems_list:[
+      {num:'121',name:'Best Time to Buy and Sell Stock',diff:'E',slug:'best-time-to-buy-stock'},
+      {num:'3',name:'Longest Substring Without Repeating',diff:'M',slug:'longest-substring-without-repeating'},
+      {num:'424',name:'Longest Repeating Character Replacement',diff:'M',slug:'longest-repeating-char-replacement'},
+      {num:'76',name:'Minimum Window Substring',diff:'H',slug:'minimum-window-substring'},
+    ]},
+    { id:'stack', icon:'📚', name:'Stack', articles:8, problems:24, difficulty:'easy', desc:'LIFO structure. Invaluable for matching and parsing.', problems_list:[
+      {num:'20',name:'Valid Parentheses',diff:'E',slug:'valid-parentheses'},
+      {num:'155',name:'Min Stack',diff:'M',slug:'min-stack'},
+      {num:'739',name:'Daily Temperatures',diff:'M',slug:'daily-temperatures'},
+      {num:'84',name:'Largest Rectangle in Histogram',diff:'H',slug:'largest-rectangle-histogram'},
+    ]},
+  ]},
+  { id:'l3', level:3, name:'Binary Search & Math', desc:'Weeks 3–4 · Halve your search space', checkpoint:'Be comfortable with Two Pointers before here.', topics:[
+    { id:'binary-search', icon:'🔍', name:'Binary Search', articles:9, problems:24, difficulty:'medium', desc:'Not just sorted arrays — apply to any monotonic function.', problems_list:[
+      {num:'704',name:'Binary Search',diff:'E',slug:'binary-search'},
+      {num:'74',name:'Search a 2D Matrix',diff:'M',slug:'search-2d-matrix'},
+      {num:'875',name:'Koko Eating Bananas',diff:'M',slug:'koko-eating-bananas'},
+      {num:'33',name:'Search in Rotated Sorted Array',diff:'M',slug:'search-rotated-array'},
+      {num:'4',name:'Median of Two Sorted Arrays',diff:'H',slug:'median-two-sorted-arrays'},
+    ]},
+    { id:'bit-manipulation', icon:'⚙️', name:'Bit Manipulation', articles:5, problems:11, difficulty:'medium', desc:'XOR tricks, bit masking, power-of-2 checks.', problems_list:[
+      {num:'136',name:'Single Number',diff:'E',slug:'single-number'},
+      {num:'191',name:'Number of 1 Bits',diff:'E',slug:'number-of-1-bits'},
+      {num:'338',name:'Counting Bits',diff:'E',slug:'counting-bits'},
+      {num:'371',name:'Sum of Two Integers',diff:'M',slug:'sum-two-integers'},
+    ]},
+  ]},
+  { id:'l4', level:4, name:'Linked Lists', desc:'Week 5 · Pointer manipulation mastery', checkpoint:'Two pointers should feel natural by now.', topics:[
+    { id:'linked-list', icon:'🔗', name:'Linked Lists', articles:10, problems:31, difficulty:'medium', desc:'Reverse, detect cycles, merge — O(1) space tricks.', problems_list:[
+      {num:'206',name:'Reverse Linked List',diff:'E',slug:'reverse-linked-list'},
+      {num:'21',name:'Merge Two Sorted Lists',diff:'E',slug:'merge-two-sorted-lists'},
+      {num:'141',name:'Linked List Cycle',diff:'E',slug:'linked-list-cycle'},
+      {num:'143',name:'Reorder List',diff:'M',slug:'reorder-list'},
+      {num:'19',name:'Remove Nth Node From End of List',diff:'M',slug:'remove-nth-node'},
+      {num:'146',name:'LRU Cache',diff:'M',slug:'lru-cache'},
+      {num:'25',name:'Reverse Nodes in k-Group',diff:'H',slug:'reverse-nodes-k-group'},
+    ]},
+  ]},
+  { id:'l5', level:5, name:'Trees', desc:'Weeks 6–7 · Recursive thinking unlocked', checkpoint:'You must be comfortable with recursion.', topics:[
+    { id:'binary-trees', icon:'🌳', name:'Binary Trees', articles:12, problems:45, difficulty:'medium', desc:'DFS (pre/in/post-order) and BFS traversals.', problems_list:[
+      {num:'226',name:'Invert Binary Tree',diff:'E',slug:'invert-binary-tree'},
+      {num:'104',name:'Maximum Depth of Binary Tree',diff:'E',slug:'max-depth-binary-tree'},
+      {num:'543',name:'Diameter of Binary Tree',diff:'E',slug:'diameter-binary-tree'},
+      {num:'102',name:'Binary Tree Level Order Traversal',diff:'M',slug:'level-order-traversal'},
+      {num:'235',name:'Lowest Common Ancestor of BST',diff:'M',slug:'lca-bst'},
+      {num:'124',name:'Binary Tree Maximum Path Sum',diff:'H',slug:'binary-tree-max-path-sum'},
+    ]},
+    { id:'heap', icon:'⛏️', name:'Heap / Priority Queue', articles:6, problems:20, difficulty:'medium', desc:'Top K problems. Min-heap and max-heap.', problems_list:[
+      {num:'703',name:'Kth Largest Element in a Stream',diff:'E',slug:'kth-largest-stream'},
+      {num:'215',name:'Kth Largest Element in Array',diff:'M',slug:'kth-largest-array'},
+      {num:'295',name:'Find Median from Data Stream',diff:'H',slug:'find-median-data-stream'},
+    ]},
+    { id:'tries', icon:'🔤', name:'Tries', articles:4, problems:12, difficulty:'medium', desc:'Prefix trees. Indispensable for autocomplete.', problems_list:[
+      {num:'208',name:'Implement Trie',diff:'M',slug:'implement-trie'},
+      {num:'211',name:'Design Add and Search Words DS',diff:'M',slug:'add-search-words'},
+      {num:'212',name:'Word Search II',diff:'H',slug:'word-search-ii'},
+    ]},
+  ]},
+  { id:'l6', level:6, name:'Graphs', desc:'Weeks 8–9 · The most versatile data structure', checkpoint:'Tree DFS/BFS must be solid. Graphs generalise trees.', topics:[
+    { id:'graphs', icon:'🗺️', name:'Graphs — BFS & DFS', articles:10, problems:32, difficulty:'medium', desc:'BFS for shortest path, DFS for connectivity.', problems_list:[
+      {num:'200',name:'Number of Islands',diff:'M',slug:'number-of-islands'},
+      {num:'133',name:'Clone Graph',diff:'M',slug:'clone-graph'},
+      {num:'207',name:'Course Schedule',diff:'M',slug:'course-schedule'},
+      {num:'323',name:'Number of Connected Components',diff:'M',slug:'connected-components'},
+      {num:'127',name:'Word Ladder',diff:'H',slug:'word-ladder'},
+    ]},
+    { id:'backtracking', icon:'🔄', name:'Backtracking', articles:7, problems:22, difficulty:'hard', desc:'Explore all possibilities, prune early.', problems_list:[
+      {num:'78',name:'Subsets',diff:'M',slug:'subsets'},
+      {num:'39',name:'Combination Sum',diff:'M',slug:'combination-sum'},
+      {num:'46',name:'Permutations',diff:'M',slug:'permutations'},
+      {num:'79',name:'Word Search',diff:'M',slug:'word-search'},
+      {num:'51',name:'N-Queens',diff:'H',slug:'n-queens'},
+    ]},
+  ]},
+  { id:'l7', level:7, name:'Dynamic Programming', desc:'Weeks 10–12 · The hardest, most rewarding topic', checkpoint:'Be solid on recursion and backtracking first.', topics:[
+    { id:'dp-1d', icon:'🧩', name:'DP — 1D Problems', articles:8, problems:28, difficulty:'medium', desc:'Fibonacci variants, house robber, climbing stairs.', problems_list:[
+      {num:'70',name:'Climbing Stairs',diff:'E',slug:'climbing-stairs'},
+      {num:'198',name:'House Robber',diff:'M',slug:'house-robber'},
+      {num:'5',name:'Longest Palindromic Substring',diff:'M',slug:'longest-palindromic-substring'},
+      {num:'322',name:'Coin Change',diff:'M',slug:'coin-change'},
+      {num:'300',name:'Longest Increasing Subsequence',diff:'M',slug:'longest-increasing-subsequence'},
+    ]},
+    { id:'dp-2d', icon:'🧠', name:'DP — 2D Problems', articles:9, problems:22, difficulty:'hard', desc:'Grid DP, edit distance, knapsack. The hard tier.', problems_list:[
+      {num:'62',name:'Unique Paths',diff:'M',slug:'unique-paths'},
+      {num:'1143',name:'Longest Common Subsequence',diff:'M',slug:'longest-common-subsequence'},
+      {num:'72',name:'Edit Distance',diff:'H',slug:'edit-distance'},
+      {num:'312',name:'Burst Balloons',diff:'H',slug:'burst-balloons'},
+    ]},
+  ]},
+  { id:'l8', level:8, name:'Interview Sprint', desc:'Weeks 13–16 · Final prep — revision + CS fundamentals', checkpoint:'All previous levels at 70%+ before sprinting.', topics:[
+    { id:'greedy', icon:'⚡', name:'Greedy', articles:5, problems:14, difficulty:'medium', desc:'Make the locally optimal choice.', problems_list:[
+      {num:'53',name:"Maximum Subarray (Kadane's)",diff:'M',slug:'maximum-subarray'},
+      {num:'55',name:'Jump Game',diff:'M',slug:'jump-game'},
+      {num:'134',name:'Gas Station',diff:'M',slug:'gas-station'},
+    ]},
+    { id:'intervals', icon:'📏', name:'Intervals', articles:4, problems:12, difficulty:'medium', desc:'Sort by start, sweep line, merge overlaps.', problems_list:[
+      {num:'57',name:'Insert Interval',diff:'M',slug:'insert-interval'},
+      {num:'56',name:'Merge Intervals',diff:'M',slug:'merge-intervals'},
+      {num:'435',name:'Non-overlapping Intervals',diff:'M',slug:'non-overlapping-intervals'},
+    ]},
+    { id:'cs-fundamentals', icon:'🖥️', name:'CS Fundamentals', articles:20, problems:0, difficulty:'easy', desc:'OS, DBMS, CN, OOPs — the non-DSA interviews.', problems_list:[
+      {num:'—',name:'OS: Processes, Threads, Scheduling',diff:'E',slug:'os-fundamentals'},
+      {num:'—',name:'DBMS: Normalisation, Indexing, ACID',diff:'E',slug:'dbms-fundamentals'},
+      {num:'—',name:'CN: TCP/IP, DNS, HTTP',diff:'E',slug:'cn-fundamentals'},
+      {num:'—',name:'OOPs: SOLID, Design Patterns',diff:'M',slug:'oops-fundamentals'},
+    ]},
+  ]},
+];
+
+// ── RENDER ────────────────────────────────
+function diffLabel(d) {
+  if(d==='E') return '<span class="p-diff diff-e">Easy</span>';
+  if(d==='M') return '<span class="p-diff diff-m">Med</span>';
+  return '<span class="p-diff diff-h">Hard</span>';
+}
+function topicSolvedCount(topic) {
+  return topic.problems_list.filter(p => Progress.getStatus(p.slug) === 'solved').length;
+}
+function topicClass(topic) {
+  const s = topicSolvedCount(topic), t = topic.problems_list.length;
+  if(s===0) return ''; if(s===t) return 't-solved'; return 't-partial';
+}
+function renderProblemList(topic) {
+  return topic.problems_list.map(p => {
+    const solved = Progress.getStatus(p.slug) === 'solved';
+    return `<a class="problem-item" href="${p.slug}.html">
+      <span class="p-status${solved?' solved':''}" data-slug="${p.slug}"
+            onclick="event.preventDefault();toggleSolve('${p.slug}',this)"></span>
+      <span class="p-num">${p.num}</span>
+      <span class="p-name">${p.name}</span>
+      ${diffLabel(p.diff)}
+      <span class="p-read">Read →</span>
+    </a>`;
+  }).join('');
+}
+function renderTopic(topic) {
+  const s = topicSolvedCount(topic), t = topic.problems_list.length;
+  const pct = t>0 ? Math.round((s/t)*100) : 0;
+  const dc = {easy:'chip easy',medium:'chip med',hard:'chip hard'}[topic.difficulty]||'chip';
+  return `<div class="topic-row ${topicClass(topic)}" id="tr-${topic.id}">
+    <div class="topic-card-tree">
+      <div class="topic-card-top" onclick="toggleTopic('${topic.id}')">
+        <div class="topic-icon-wrap">${topic.icon}</div>
+        <div class="topic-info">
+          <div class="topic-name-tree">${topic.name}</div>
+          <div class="topic-chips">
+            <span class="${dc}">${topic.difficulty.charAt(0).toUpperCase()+topic.difficulty.slice(1)}</span>
+            <span class="chip">${topic.articles} articles</span>
+            ${t>0?`<span class="chip">${t} problems</span>`:''}
+          </div>
+        </div>
+        <div class="topic-right">
+          <div class="topic-counts"><strong>${s}</strong> / ${t} solved</div>
+          ${t>0?`<div class="topic-progress-bar"><div class="topic-progress-fill" id="fill-${topic.id}" style="width:${pct}%"></div></div>`:''}
+        </div>
+        <button class="topic-expand-btn" aria-label="Expand">▼</button>
+      </div>
+      <div class="problem-list" id="pl-${topic.id}">${renderProblemList(topic)}</div>
+    </div>
+  </div>`;
+}
+function renderLevel(lvl, isFirst) {
+  const allP = lvl.topics.flatMap(t=>t.problems_list);
+  const s = allP.filter(p=>Progress.getStatus(p.slug)==='solved').length;
+  const t = allP.length, pct = t>0?Math.round((s/t)*100):0;
+  const complete = t>0&&s===t, active = !complete&&s>0;
+  const state = complete?'completed':active?'active':(isFirst?'unlocked':'');
+  return `<div class="level-block ${state}${isFirst?' open':''}" id="${lvl.id}">
+    <div class="level-header" onclick="toggleLevel('${lvl.id}')">
+      <div class="level-badge">${complete?'✓':lvl.level}</div>
+      <div class="level-meta">
+        <div class="level-name">Level ${lvl.level} — ${lvl.name}</div>
+        <div class="level-desc">${lvl.desc}</div>
+      </div>
+      <div class="level-progress-pill" id="pill-${lvl.id}">${complete?'Complete ✓':`${s} / ${t}`}</div>
+      <span class="level-chevron">►</span>
+    </div>
+    <div class="level-body">
+      <div class="checkpoint">
+        <div class="checkpoint-badge">🔒</div>
+        <div class="checkpoint-text"><strong>Before this level</strong><span>${lvl.checkpoint}</span></div>
+      </div>
+      ${lvl.topics.map(t=>renderTopic(t)).join('')}
+    </div>
+  </div>`;
+}
+function renderRoadmap() {
+  const root = document.getElementById('roadmap-root');
+  if(!root) return;
+  root.innerHTML = ROADMAP.map((lvl,i)=>renderLevel(lvl,i===0)).join('');
+  updateStats();
+}
+function toggleLevel(id) { document.getElementById(id).classList.toggle('open'); }
+function toggleTopic(id) { document.getElementById('tr-'+id).classList.toggle('open'); }
+function toggleSolve(slug, dotEl) {
+  if(Progress.getStatus(slug)==='solved') { Progress.clear(slug); dotEl.classList.remove('solved'); }
+  else { Progress.markSolved(slug); dotEl.classList.add('solved'); Streak.bump(); }
+  updateStats(); refreshTopicBars();
+}
+function updateStats() {
+  const s = Progress.solvedCount(), total = 500, pct = Math.round((s/total)*100);
+  const ts = document.getElementById('total-solved'); if(ts) ts.textContent = s;
+  const of = document.getElementById('overall-fill'); if(of) of.style.width = pct+'%';
+  const pl = document.getElementById('pct-label'); if(pl) pl.textContent = pct+'%';
+  const sc = document.getElementById('solved-counter'); if(sc) sc.textContent = s;
+  const sn = document.getElementById('streak-num'); if(sn) sn.textContent = Streak.get();
+}
+function refreshTopicBars() {
+  ROADMAP.forEach(lvl => {
+    lvl.topics.forEach(topic => {
+      const s = topicSolvedCount(topic), t = topic.problems_list.length;
+      const fill = document.getElementById('fill-'+topic.id);
+      if(fill) fill.style.width = (t>0?Math.round((s/t)*100):0)+'%';
+      const row = document.getElementById('tr-'+topic.id);
+      if(row) row.className = 'topic-row '+topicClass(topic)+(row.classList.contains('open')?' open':'');
+    });
+    const allP = lvl.topics.flatMap(t=>t.problems_list);
+    const s = allP.filter(p=>Progress.getStatus(p.slug)==='solved').length, t = allP.length;
+    const pill = document.getElementById('pill-'+lvl.id);
+    if(pill) { const done=t>0&&s===t; pill.textContent=done?'Complete ✓':`${s} / ${t}`;
+      const bl = document.getElementById(lvl.id);
+      if(bl){bl.classList.toggle('completed',done);bl.classList.toggle('active',!done&&s>0);} }
+  });
+}
+
 // ── INIT ON DOM READY ─────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+  renderRoadmap();
+  Streak.bump();
   initReveal();
   initCopyButtons();
   initReadingBar();
-
-  // Update nav solved counter
   const counter = document.getElementById('solved-counter');
-  if (counter) counter.textContent = Progress.solvedCount();
-
-  // Streak display
-  const streakEl = document.getElementById('streak-display');
-  if (streakEl) streakEl.textContent = '🔥 ' + Streak.get();
+  if(counter) counter.textContent = Progress.solvedCount();
 });
 
 </script>
