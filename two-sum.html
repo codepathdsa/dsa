@@ -4,502 +4,281 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Two Sum — Full Editorial | CodePath</title>
-  <meta name="description" content="Deep written editorial for Two Sum. Three approaches: brute force O(n²), sorting + two pointers O(n log n), and HashMap O(n). Includes dry run, edge cases, and interview follow-up questions.">
-  <link rel="stylesheet" href="../css/style.css">
+  <meta name="description" content="Deep written editorial for Two Sum. Three approaches: brute force O(n), sorting + two pointers O(n log n), and HashMap O(n). Includes dry run, edge cases, and interview follow-up questions.">
   <!-- Reading progress bar -->
+    <!-- SHARED DESIGN SYSTEM -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,500&family=JetBrains+Mono:wght@400;500;600&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    #reading-bar {
-      position: fixed;
-      top: 0; left: 0;
-      height: 3px;
-      background: var(--accent);
-      z-index: 200;
-      width: 0%;
-      transition: width 0.1s linear;
-    }
-
-    /* ── EDITORIAL LAYOUT ── */
-    .editorial-layout {
-      max-width: 1160px;
-      margin: 0 auto;
-      padding: 48px 5% 100px;
-      display: grid;
-      grid-template-columns: 1fr 240px;
-      gap: 56px;
-      align-items: start;
-    }
-
-    /* ── ARTICLE ── */
-    .article-header {
-      margin-bottom: 36px;
-    }
-
-    .article-breadcrumb {
-      font-size: 0.78rem;
-      color: var(--muted);
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .article-breadcrumb a { color: var(--muted); text-decoration: none; }
-    .article-breadcrumb a:hover { color: var(--accent); }
-
-    .article-title {
-      font-family: var(--serif);
-      font-size: clamp(1.9rem, 4vw, 2.8rem);
-      font-weight: 900;
-      letter-spacing: -0.03em;
-      color: var(--ink);
-      line-height: 1.1;
-      margin-bottom: 16px;
-    }
-
-    .article-meta {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-bottom: 20px;
-    }
-
-    .article-tags {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-
-    .article-stats {
-      display: flex;
-      gap: 16px;
-      font-size: 0.78rem;
-      color: var(--muted);
-      margin-top: 4px;
-    }
-
-    .article-stats span {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    /* Mark solved button */
-    .solve-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 9px 18px;
-      border-radius: var(--radius);
-      font-family: var(--sans);
-      font-size: 0.85rem;
-      font-weight: 700;
-      border: 2px solid var(--border2);
-      background: var(--surface);
-      color: var(--ink2);
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-
-    .solve-btn:hover { border-color: var(--green); color: var(--green); }
-    .solve-btn.solved { border-color: var(--green); background: var(--green-bg); color: var(--green); }
-
-    /* ── CONTENT STYLES ── */
-    .article-content h2 {
-      font-family: var(--serif);
-      font-size: 1.5rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      color: var(--ink);
-      margin: 44px 0 14px;
-      padding-top: 44px;
-      border-top: 1px solid var(--border);
-    }
-
-    .article-content h2:first-child { border-top: none; margin-top: 0; padding-top: 0; }
-
-    .article-content h3 {
-      font-family: var(--serif);
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: var(--ink);
-      margin: 28px 0 10px;
-    }
-
-    .article-content p {
-      font-size: 1rem;
-      line-height: 1.8;
-      color: var(--ink2);
-      margin-bottom: 16px;
-    }
-
-    .article-content strong { color: var(--ink); font-weight: 700; }
-
-    .article-content ul, .article-content ol {
-      padding-left: 22px;
-      margin-bottom: 16px;
-    }
-
-    .article-content li {
-      font-size: 1rem;
-      line-height: 1.75;
-      color: var(--ink2);
-      margin-bottom: 6px;
-    }
-
-    .article-content code {
-      font-family: var(--mono);
-      font-size: 0.85em;
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      padding: 1px 5px;
-      border-radius: 3px;
-      color: var(--accent);
-    }
-
-    /* Insight box */
-    .insight {
-      background: var(--accent-bg);
-      border-left: 4px solid var(--accent);
-      padding: 16px 20px;
-      border-radius: 0 var(--radius) var(--radius) 0;
-      margin: 20px 0;
-    }
-
-    .insight-label {
-      font-size: 0.7rem;
-      font-weight: 800;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 6px;
-    }
-
-    .insight p {
-      font-size: 0.92rem;
-      color: var(--ink2);
-      margin: 0;
-      line-height: 1.65;
-    }
-
-    /* Callout boxes */
-    .callout {
-      background: var(--blue-bg);
-      border: 1px solid #cfdcf5;
-      padding: 16px 20px;
-      border-radius: var(--radius);
-      margin: 20px 0;
-    }
-
-    .callout.warning {
-      background: var(--amber-bg);
-      border-color: #f0d8a0;
-    }
-
-    .callout.success {
-      background: var(--green-bg);
-      border-color: #b3ddc9;
-    }
-
-    .callout p {
-      font-size: 0.9rem;
-      margin: 0;
-      color: var(--ink2);
-    }
-
-    .callout strong { color: var(--ink); }
-
-    /* Complexity table */
-    .complexity-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 20px 0;
-      font-size: 0.88rem;
-    }
-
-    .complexity-table th {
-      background: var(--ink);
-      color: var(--bg);
-      padding: 10px 16px;
-      text-align: left;
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    .complexity-table td {
-      padding: 11px 16px;
-      border-bottom: 1px solid var(--border);
-      color: var(--ink2);
-    }
-
-    .complexity-table tr:last-child td { border-bottom: none; }
-    .complexity-table tr:nth-child(even) td { background: var(--surface2); }
-    .complexity-table tr.best td { background: var(--green-bg); }
-    .complexity-table tr.best td:first-child { font-weight: 700; color: var(--green); }
-
-    /* Code blocks */
-    .code-block {
-      margin: 20px 0;
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      border: 1px solid var(--border);
-      position: relative;
-    }
-
-    .code-header {
-      background: var(--ink);
-      padding: 11px 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .code-lang {
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: rgba(247,245,240,0.4);
-    }
-
-    .copy-btn {
-      font-size: 0.72rem;
-      font-weight: 600;
-      background: rgba(247,245,240,0.08);
-      color: rgba(247,245,240,0.5);
-      border: 1px solid rgba(247,245,240,0.12);
-      padding: 3px 10px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-family: var(--sans);
-      transition: all 0.15s;
-    }
-
-    .copy-btn:hover {
-      background: rgba(247,245,240,0.15);
-      color: var(--bg);
-    }
-
-    pre {
-      background: #1a1814;
-      margin: 0;
-      padding: 20px;
-      overflow-x: auto;
-    }
-
-    pre code {
-      font-family: var(--mono);
-      font-size: 0.85rem;
-      line-height: 1.7;
-      color: #d4d0c8;
-      background: none;
-      border: none;
-      padding: 0;
-    }
-
-    .c-kw   { color: #c792ea; }
-    .c-fn   { color: #82aaff; }
-    .c-cm   { color: #546e7a; font-style: italic; }
-    .c-str  { color: #c3e88d; }
-    .c-num  { color: #f78c6c; }
-    .c-type { color: #ffcb6b; }
-    .c-op   { color: #89ddff; }
-
-    /* Dry run table */
-    .dry-run-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.83rem;
-      margin: 20px 0;
-      font-family: var(--mono);
-    }
-
-    .dry-run-table th {
-      background: var(--bg2);
-      padding: 9px 12px;
-      text-align: left;
-      font-family: var(--sans);
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--muted);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .dry-run-table td {
-      padding: 9px 12px;
-      border-bottom: 1px solid var(--border);
-      color: var(--ink2);
-      vertical-align: top;
-    }
-
-    .dry-run-table tr:last-child td { border-bottom: none; }
-    .dry-run-table tr.highlight td { background: var(--green-bg); }
-
-    /* Approach tabs */
-    .approach-tabs {
-      display: flex;
-      gap: 0;
-      border-bottom: 2px solid var(--border);
-      margin-bottom: 24px;
-      margin-top: 20px;
-    }
-
-    .approach-tab {
-      padding: 10px 20px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--muted);
-      cursor: pointer;
-      border-bottom: 2px solid transparent;
-      margin-bottom: -2px;
-      transition: all 0.15s;
-      white-space: nowrap;
-    }
-
-    .approach-tab.active {
-      color: var(--accent);
-      border-bottom-color: var(--accent);
-    }
-
-    .approach-tab:hover { color: var(--ink); }
-
-    .tab-panel { display: none; }
-    .tab-panel.active { display: block; }
-
-    /* Follow-up questions */
-    .followup-list {
-      list-style: none;
-      padding: 0;
-      margin: 16px 0;
-    }
-
-    .followup-list li {
-      padding: 14px 16px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      margin-bottom: 8px;
-      font-size: 0.9rem;
-      color: var(--ink2);
-      display: flex;
-      gap: 12px;
-      align-items: flex-start;
-      background: var(--surface2);
-    }
-
-    .fq-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
-
-    /* ── SIDEBAR / TOC ── */
-    .article-sidebar {
-      position: sticky;
-      top: 74px;
-    }
-
-    .toc-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      margin-bottom: 16px;
-    }
-
-    .toc-header {
-      padding: 12px 16px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--muted);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .toc-list {
-      list-style: none;
-      padding: 10px 0;
-    }
-
-    .toc-list li { }
-    .toc-list a {
-      display: block;
-      padding: 6px 16px;
-      font-size: 0.8rem;
-      color: var(--ink2);
-      text-decoration: none;
-      transition: color 0.12s, background 0.12s;
-    }
-
-    .toc-list a:hover, .toc-list a.active {
-      color: var(--accent);
-      background: var(--accent-bg);
-    }
-
-    .toc-sub a { padding-left: 28px; font-size: 0.75rem; color: var(--muted); }
-
-    .meta-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 16px;
-      margin-bottom: 16px;
-    }
-
-    .meta-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 8px 0;
-      border-bottom: 1px solid var(--border);
-      font-size: 0.82rem;
-    }
-
-    .meta-row:last-child { border-bottom: none; }
-    .meta-label { color: var(--muted); }
-    .meta-value { font-weight: 600; color: var(--ink); }
-
-    /* Prev/Next nav */
-    .prev-next {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-top: 60px;
-      padding-top: 32px;
-      border-top: 1px solid var(--border);
-    }
-
-    .nav-problem {
-      padding: 16px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      text-decoration: none;
-      color: var(--ink);
-      transition: border-color 0.15s;
-    }
-
-    .nav-problem:hover { border-color: var(--accent); text-decoration: none; }
-    .nav-problem.next { text-align: right; }
-
-    .nav-dir {
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 4px;
-    }
-
-    .nav-name {
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: var(--ink);
-    }
-
-    @media (max-width: 900px) {
-      .editorial-layout { grid-template-columns: 1fr; }
-      .article-sidebar { display: none; }
-    }
+/* CodePath — Shared Design System */
+
+/* ── TOKENS ─────────────────────────────── */
+:root {
+  --bg:        #f7f5f0;
+  --bg2:       #f0ede5;
+  --surface:   #ffffff;
+  --surface2:  #faf9f6;
+  --border:    #e2ddd4;
+  --border2:   #cdc8bc;
+
+  --ink:       #1a1814;
+  --ink2:      #3d3a33;
+  --muted:     #8a8478;
+  --faint:     #b8b3a8;
+
+  --green:     #1a6b4a;
+  --green-bg:  #e8f5ef;
+  --amber:     #92610a;
+  --amber-bg:  #fef3dc;
+  --red:       #9b2020;
+  --red-bg:    #fde8e8;
+  --blue:      #1a4d8f;
+  --blue-bg:   #e8f0fc;
+
+  --accent:    #c94b0c;       /* editorial orange-red — distinctive */
+  --accent-bg: #fdf0ea;
+
+  --mono:      'JetBrains Mono', 'Courier New', monospace;
+  --serif:     'Fraunces', Georgia, serif;
+  --sans:      'Instrument Sans', system-ui, sans-serif;
+
+  --radius:    6px;
+  --radius-lg: 12px;
+  --shadow:    0 1px 3px rgba(26,24,20,0.08), 0 4px 16px rgba(26,24,20,0.06);
+  --shadow-lg: 0 4px 24px rgba(26,24,20,0.12), 0 16px 48px rgba(26,24,20,0.08);
+}
+
+/* ── RESET ──────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 1rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+img { max-width: 100%; display: block; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code { font-family: var(--mono); }
+
+/* ── NAV ────────────────────────────────── */
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(247,245,240,0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 5%;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-logo {
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+}
+
+.nav-logo span { color: var(--accent); }
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  list-style: none;
+}
+
+.nav-links a {
+  color: var(--ink2);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.nav-links a:hover { color: var(--ink); }
+
+.nav-links a.active { color: var(--accent); font-weight: 600; }
+
+.nav-cta {
+  background: var(--ink) !important;
+  color: var(--bg) !important;
+  padding: 7px 18px;
+  border-radius: var(--radius);
+  font-weight: 600 !important;
+  font-size: 0.85rem !important;
+  transition: background 0.15s !important;
+}
+.nav-cta:hover { background: var(--accent) !important; text-decoration: none !important; }
+
+/* ── LAYOUT ─────────────────────────────── */
+.container {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 0 5%;
+}
+
+.container--narrow {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 0 5%;
+}
+
+/* ── TAGS / BADGES ──────────────────────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.badge--easy   { background: var(--green-bg); color: var(--green); }
+.badge--medium { background: var(--amber-bg); color: var(--amber); }
+.badge--hard   { background: var(--red-bg);   color: var(--red);   }
+.badge--topic  { background: var(--blue-bg);  color: var(--blue);  }
+.badge--new    { background: var(--accent-bg); color: var(--accent); }
+
+/* ── BUTTONS ────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 11px 22px;
+  border-radius: var(--radius);
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.btn--primary {
+  background: var(--ink);
+  color: var(--bg);
+}
+.btn--primary:hover {
+  background: var(--accent);
+  text-decoration: none;
+  color: white;
+}
+
+.btn--outline {
+  background: transparent;
+  color: var(--ink2);
+  border: 1px solid var(--border2);
+}
+.btn--outline:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--muted);
+  padding: 8px 14px;
+}
+.btn--ghost:hover {
+  background: var(--bg2);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+/* ── DIVIDER ────────────────────────────── */
+.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 40px 0;
+}
+
+/* ── FOOTER ─────────────────────────────── */
+.site-footer {
+  background: var(--ink);
+  color: rgba(247,245,240,0.6);
+  padding: 60px 5% 40px;
+  margin-top: 80px;
+}
+
+.footer-inner {
+  max-width: 1160px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 48px;
+  margin-bottom: 48px;
+}
+
+.footer-brand .nav-logo { color: var(--bg); }
+.footer-brand p {
+  margin-top: 12px;
+  font-size: 0.85rem;
+  line-height: 1.7;
+  max-width: 260px;
+}
+
+.footer-col h5 {
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(247,245,240,0.35);
+  margin-bottom: 14px;
+}
+
+.footer-col ul { list-style: none; }
+.footer-col li { margin-bottom: 9px; }
+.footer-col a {
+  color: rgba(247,245,240,0.6);
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.footer-col a:hover { color: var(--bg); }
+
+.footer-bottom {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding-top: 24px;
+  border-top: 1px solid rgba(247,245,240,0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+}
+
+/* ── UTILITIES ──────────────────────────── */
+.text-muted   { color: var(--muted); }
+.text-accent  { color: var(--accent); }
+.text-serif   { font-family: var(--serif); }
+.text-mono    { font-family: var(--mono); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .footer-inner { grid-template-columns: 1fr 1fr; gap: 32px; }
+}
+
   </style>
 </head>
 <body>
@@ -512,9 +291,9 @@
     <li><a href="../index.html#roadmap">Roadmap</a></li>
     <li><a href="../index.html#topics">Topics</a></li>
     <li><a href="#" style="color:var(--muted);font-size:0.82rem;">
-      ✓ <span id="solved-counter">0</span> solved
+       <span id="solved-counter">0</span> solved
     </a></li>
-    <li><a href="#" class="nav-cta">Star on GitHub ★</a></li>
+    <li><a href="#" class="nav-cta">Star on GitHub </a></li>
   </ul>
 </nav>
 
@@ -527,9 +306,9 @@
     <div class="article-header">
       <div class="article-breadcrumb">
         <a href="../problems.html">Problems</a>
-        <span>›</span>
+        <span></span>
         <a href="../problems.html?topic=arrays">Arrays & Hashing</a>
-        <span>›</span>
+        <span></span>
         <span>Two Sum</span>
       </div>
 
@@ -544,25 +323,25 @@
       </div>
 
       <div class="article-stats">
-        <span>⏱ 5 min read</span>
-        <span>🧭 3 approaches</span>
-        <span>🏢 Google · Amazon · Meta</span>
-        <span>✓ <span id="acceptance">~49%</span> acceptance</span>
+        <span> 5 min read</span>
+        <span>ð 3 approaches</span>
+        <span>ð Google  Amazon  Meta</span>
+        <span> <span id="acceptance">~49%</span> acceptance</span>
       </div>
 
       <div style="margin-top:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
         <button class="solve-btn" id="solve-btn" onclick="toggleSolved()">
-          <span id="solve-icon">○</span>
+          <span id="solve-icon"></span>
           <span id="solve-text">Mark as Solved</span>
         </button>
         <a href="https://leetcode.com/problems/two-sum/" target="_blank" rel="noopener"
            class="btn btn--outline" style="font-size:0.82rem;padding:8px 14px;">
-          Try on LeetCode ↗
+          Try on LeetCode 
         </a>
       </div>
     </div>
 
-    <!-- ─── ARTICLE CONTENT ─── -->
+    <!--  ARTICLE CONTENT  -->
     <div class="article-content" id="article-content">
 
       <!-- PROBLEM STATEMENT -->
@@ -586,24 +365,24 @@
       </div>
 
       <div class="callout warning">
-        <p><strong>Constraints:</strong> 2 ≤ nums.length ≤ 10⁴ · -10⁹ ≤ nums[i] ≤ 10⁹ · -10⁹ ≤ target ≤ 10⁹ · Exactly one valid answer exists.</p>
+        <p><strong>Constraints:</strong> 2  nums.length  10  -10  nums[i]  10  -10  target  10  Exactly one valid answer exists.</p>
       </div>
 
       <!-- INTUITION -->
-      <h2 id="intuition">Intuition — Building the Insight</h2>
+      <h2 id="intuition">Intuition  Building the Insight</h2>
 
       <p>Before jumping to code, let's build the core intuition. This is the step most people skip, and it's exactly why they struggle to solve <em>new</em> problems.</p>
 
       <p>Read the problem again: we want two numbers in the array that <strong>sum to a target</strong>. The naive question to ask: "can I just check every pair?"</p>
 
-      <p>Yes — but that's O(n²). With n up to 10,000, that's up to 100 million operations. LeetCode will pass it, but interviewers expect better.</p>
+      <p>Yes  but that's O(n). With n up to 10,000, that's up to 100 million operations. LeetCode will pass it, but interviewers expect better.</p>
 
       <div class="insight">
         <div class="insight-label">Core Insight</div>
-        <p>For every number <code>x</code> we encounter, we don't need to search the whole array for its complement — we just need to know if <code>target − x</code> has appeared <em>before</em>. A hash map tells us this in O(1).</p>
+        <p>For every number <code>x</code> we encounter, we don't need to search the whole array for its complement  we just need to know if <code>target  x</code> has appeared <em>before</em>. A hash map tells us this in O(1).</p>
       </div>
 
-      <p>This reframe — from "find a pair" to "check if complement exists" — is the entire algorithm. Everything else is mechanics.</p>
+      <p>This reframe  from "find a pair" to "check if complement exists"  is the entire algorithm. Everything else is mechanics.</p>
 
       <!-- APPROACHES COMPARISON -->
       <h2 id="approaches">All 3 Approaches</h2>
@@ -620,7 +399,7 @@
         <tbody>
           <tr>
             <td>Brute Force (nested loops)</td>
-            <td>O(n²)</td>
+            <td>O(n)</td>
             <td>O(1)</td>
             <td>Check every pair. Simple but slow.</td>
           </tr>
@@ -631,7 +410,7 @@
             <td>Elegant but loses original indices.</td>
           </tr>
           <tr class="best">
-            <td>HashMap (One Pass) ✦ Best</td>
+            <td>HashMap (One Pass)  Best</td>
             <td>O(n)</td>
             <td>O(n)</td>
             <td>Single traversal, O(1) lookups.</td>
@@ -643,17 +422,17 @@
       <div class="approach-tabs" id="approach-tabs">
         <div class="approach-tab active" data-tab="approach1">1. Brute Force</div>
         <div class="approach-tab" data-tab="approach2">2. Sort + Two Pointers</div>
-        <div class="approach-tab" data-tab="approach3">3. HashMap ✦</div>
+        <div class="approach-tab" data-tab="approach3">3. HashMap </div>
       </div>
 
       <!-- APPROACH 1: BRUTE FORCE -->
       <div class="tab-panel active" id="approach1">
-        <h3>Approach 1 — Brute Force</h3>
+        <h3>Approach 1  Brute Force</h3>
         <p>For each element <code>nums[i]</code>, scan every element <code>nums[j]</code> where <code>j > i</code>. Check if they sum to <code>target</code>.</p>
 
         <div class="callout warning">
           <p><strong>Why it works:</strong> You check every possible pair, so you'll definitely find the one that sums to target. <br>
-          <strong>Why it's slow:</strong> n elements × n elements = O(n²) checks.</p>
+          <strong>Why it's slow:</strong> n elements  n elements = O(n) checks.</p>
         </div>
 
         <div class="code-block">
@@ -670,16 +449,16 @@
     <span class="c-kw">return</span> []  <span class="c-cm"># guaranteed to find answer per constraints</span></code></pre>
         </div>
 
-        <p><strong>Complexity:</strong> Time O(n²) · Space O(1). Passes LeetCode but will fail in interviews for large inputs.</p>
+        <p><strong>Complexity:</strong> Time O(n)  Space O(1). Passes LeetCode but will fail in interviews for large inputs.</p>
       </div>
 
       <!-- APPROACH 2: SORT + TWO POINTERS -->
       <div class="tab-panel" id="approach2">
-        <h3>Approach 2 — Sort + Two Pointers</h3>
+        <h3>Approach 2  Sort + Two Pointers</h3>
         <p>Sort the array. Then use two pointers: one at the start (<code>left</code>) and one at the end (<code>right</code>). Move them based on whether the current sum is too small or too large.</p>
 
         <div class="callout warning">
-          <p><strong>The catch:</strong> Sorting changes the original indices. Since the problem asks for indices, you need to store index-value pairs before sorting — this means O(n) extra space.</p>
+          <p><strong>The catch:</strong> Sorting changes the original indices. Since the problem asks for indices, you need to store index-value pairs before sorting  this means O(n) extra space.</p>
         </div>
 
         <div class="code-block">
@@ -706,18 +485,18 @@
     <span class="c-kw">return</span> []</code></pre>
         </div>
 
-        <p><strong>Complexity:</strong> Time O(n log n) · Space O(n). Better than brute force, but not optimal. This pattern is extremely useful for variants where you <em>don't</em> need original indices (e.g., 3Sum, 4Sum).</p>
+        <p><strong>Complexity:</strong> Time O(n log n)  Space O(n). Better than brute force, but not optimal. This pattern is extremely useful for variants where you <em>don't</em> need original indices (e.g., 3Sum, 4Sum).</p>
       </div>
 
       <!-- APPROACH 3: HASHMAP -->
       <div class="tab-panel" id="approach3">
-        <h3>Approach 3 — HashMap (One Pass) — Optimal</h3>
+        <h3>Approach 3  HashMap (One Pass)  Optimal</h3>
 
         <p>Iterate through the array once. For each element <code>nums[i]</code>, calculate <code>diff = target - nums[i]</code>. If <code>diff</code> is already in our hash map, we found the pair. Otherwise, add <code>nums[i]</code> to the map and continue.</p>
 
         <div class="insight">
           <div class="insight-label">Why this works</div>
-          <p>We process elements left to right. When we're at index <code>i</code>, every element with index <code>j &lt; i</code> is already in the map. So when we look up <code>diff</code>, we're guaranteed it came before <code>i</code> — no duplicate index possible.</p>
+          <p>We process elements left to right. When we're at index <code>i</code>, every element with index <code>j &lt; i</code> is already in the map. So when we look up <code>diff</code>, we're guaranteed it came before <code>i</code>  no duplicate index possible.</p>
         </div>
 
         <div class="code-block">
@@ -726,7 +505,7 @@
             <button class="copy-btn">Copy</button>
           </div>
           <pre><code><span class="c-kw">def</span> <span class="c-fn">twoSum</span>(nums, target):
-    seen = {}  <span class="c-cm"># value → index</span>
+    seen = {}  <span class="c-cm"># value  index</span>
 
     <span class="c-kw">for</span> i, n <span class="c-kw">in</span> <span class="c-fn">enumerate</span>(nums):
         diff = target <span class="c-op">-</span> n
@@ -783,11 +562,11 @@
 }</code></pre>
         </div>
 
-        <p><strong>Complexity:</strong> Time O(n) · Space O(n). Optimal for this problem.</p>
+        <p><strong>Complexity:</strong> Time O(n)  Space O(n). Optimal for this problem.</p>
       </div>
 
       <!-- DRY RUN -->
-      <h2 id="dry-run">Dry Run — Tracing the HashMap Solution</h2>
+      <h2 id="dry-run">Dry Run  Tracing the HashMap Solution</h2>
 
       <p>Input: <code>nums = [2, 7, 11, 15]</code>, <code>target = 9</code></p>
 
@@ -797,7 +576,7 @@
             <th>Step</th>
             <th>i</th>
             <th>nums[i]</th>
-            <th>diff = 9 − nums[i]</th>
+            <th>diff = 9  nums[i]</th>
             <th>seen (before)</th>
             <th>Action</th>
           </tr>
@@ -809,7 +588,7 @@
             <td>2</td>
             <td>7</td>
             <td>{}</td>
-            <td>7 not in seen → add seen[2]=0</td>
+            <td>7 not in seen  add seen[2]=0</td>
           </tr>
           <tr class="highlight">
             <td>2</td>
@@ -817,7 +596,7 @@
             <td>7</td>
             <td>2</td>
             <td>{2:0}</td>
-            <td>2 in seen! → return [seen[2], 1] = [0, 1] ✓</td>
+            <td>2 in seen!  return [seen[2], 1] = [0, 1] </td>
           </tr>
         </tbody>
       </table>
@@ -842,7 +621,7 @@
             <td>3</td>
             <td>3</td>
             <td>{}</td>
-            <td>3 not in seen → add seen[3]=0</td>
+            <td>3 not in seen  add seen[3]=0</td>
           </tr>
           <tr>
             <td>2</td>
@@ -850,7 +629,7 @@
             <td>2</td>
             <td>4</td>
             <td>{3:0}</td>
-            <td>4 not in seen → add seen[2]=1</td>
+            <td>4 not in seen  add seen[2]=1</td>
           </tr>
           <tr class="highlight">
             <td>3</td>
@@ -858,7 +637,7 @@
             <td>4</td>
             <td>2</td>
             <td>{3:0, 2:1}</td>
-            <td>2 in seen! → return [seen[2], 2] = [1, 2] ✓</td>
+            <td>2 in seen!  return [seen[2], 2] = [1, 2] </td>
           </tr>
         </tbody>
       </table>
@@ -869,15 +648,15 @@
       <p>Never submit without running through these mentally:</p>
 
       <div class="callout">
-        <p><strong>1. Duplicate values:</strong> <code>nums = [3, 3]</code>, <code>target = 6</code> → Should return <code>[0, 1]</code>. The one-pass solution handles this because when we see the second 3, the first 3 is already in <code>seen</code>.</p>
+        <p><strong>1. Duplicate values:</strong> <code>nums = [3, 3]</code>, <code>target = 6</code>  Should return <code>[0, 1]</code>. The one-pass solution handles this because when we see the second 3, the first 3 is already in <code>seen</code>.</p>
       </div>
 
       <div class="callout">
-        <p><strong>2. Negative numbers:</strong> <code>nums = [-1, -2, -3, -4, -5]</code>, <code>target = -8</code> → Works perfectly, hash maps handle negative keys fine.</p>
+        <p><strong>2. Negative numbers:</strong> <code>nums = [-1, -2, -3, -4, -5]</code>, <code>target = -8</code>  Works perfectly, hash maps handle negative keys fine.</p>
       </div>
 
       <div class="callout">
-        <p><strong>3. Answer at the very end:</strong> <code>nums = [1, 2, 3, 4, 5]</code>, <code>target = 9</code> → Returns <code>[3, 4]</code>. The algorithm doesn't shortcut early — it scans through all elements if needed.</p>
+        <p><strong>3. Answer at the very end:</strong> <code>nums = [1, 2, 3, 4, 5]</code>, <code>target = 9</code>  Returns <code>[3, 4]</code>. The algorithm doesn't shortcut early  it scans through all elements if needed.</p>
       </div>
 
       <div class="callout warning">
@@ -891,29 +670,29 @@
 
       <ul class="followup-list">
         <li>
-          <span class="fq-icon">🔁</span>
+          <span class="fq-icon">ð</span>
           <div><strong>What if there are multiple valid pairs?</strong> Return all pairs. Change return to append to a list and continue iterating.</div>
         </li>
         <li>
-          <span class="fq-icon">🔢</span>
+          <span class="fq-icon">ð</span>
           <div><strong>What if no solution exists?</strong> Return <code>[-1, -1]</code> or an empty array. The problem guarantees exactly one, but always clarify this assumption.</div>
         </li>
         <li>
-          <span class="fq-icon">📊</span>
-          <div><strong>3Sum — what if we need 3 numbers?</strong> Fix one number, then Two Sum on the rest. Use sort + two pointers. See problem #15.</div>
+          <span class="fq-icon">ð</span>
+          <div><strong>3Sum  what if we need 3 numbers?</strong> Fix one number, then Two Sum on the rest. Use sort + two pointers. See problem #15.</div>
         </li>
         <li>
-          <span class="fq-icon">💾</span>
-          <div><strong>What if the array is huge and you can only read it once?</strong> The one-pass HashMap approach already handles this — it's a streaming algorithm.</div>
+          <span class="fq-icon">ð</span>
+          <div><strong>What if the array is huge and you can only read it once?</strong> The one-pass HashMap approach already handles this  it's a streaming algorithm.</div>
         </li>
         <li>
-          <span class="fq-icon">📉</span>
+          <span class="fq-icon">ð</span>
           <div><strong>Can you do it in O(1) space?</strong> Only if you can sort and modify the array in place (Two Pointers), and you don't need original indices.</div>
         </li>
       </ul>
 
       <!-- PATTERN NOTE -->
-      <h2 id="pattern">The Pattern — Where Else Does This Apply?</h2>
+      <h2 id="pattern">The Pattern  Where Else Does This Apply?</h2>
 
       <div class="insight">
         <div class="insight-label">Pattern Recognition</div>
@@ -922,17 +701,17 @@
 
       <p>Related problems to solve next:</p>
       <ul>
-        <li><strong>#167</strong> — Two Sum II (array is sorted — use two pointers instead)</li>
-        <li><strong>#15</strong> — 3Sum (fix one element, two-sum the rest)</li>
-        <li><strong>#560</strong> — Subarray Sum Equals K (prefix sums + hash map)</li>
-        <li><strong>#1</strong> variant — Two Sum with input as a stream</li>
+        <li><strong>#167</strong>  Two Sum II (array is sorted  use two pointers instead)</li>
+        <li><strong>#15</strong>  3Sum (fix one element, two-sum the rest)</li>
+        <li><strong>#560</strong>  Subarray Sum Equals K (prefix sums + hash map)</li>
+        <li><strong>#1</strong> variant  Two Sum with input as a stream</li>
       </ul>
 
       <!-- PREV / NEXT NAV -->
       <div class="prev-next">
         <div></div>
         <a href="contains-duplicate.html" class="nav-problem next">
-          <div class="nav-dir">Next Problem →</div>
+          <div class="nav-dir">Next Problem </div>
           <div class="nav-name">#217. Contains Duplicate</div>
         </a>
       </div>
@@ -1011,14 +790,14 @@
     </div>
   </div>
   <div class="footer-bottom">
-    <span>© 2026 CodePath · Free forever</span>
-    <span>⭐ Star on GitHub</span>
+    <span> 2026 CodePath  Free forever</span>
+    <span> Star on GitHub</span>
   </div>
 </footer>
 
 <script src="../js/app.js"></script>
 <script>
-  // ── APPROACH TABS ─────────────────────────
+  //  APPROACH TABS 
   document.querySelectorAll('.approach-tab').forEach(tab => {
     tab.addEventListener('click', () => {
       document.querySelectorAll('.approach-tab').forEach(t => t.classList.remove('active'));
@@ -1028,7 +807,7 @@
     });
   });
 
-  // ── SOLVE BUTTON ──────────────────────────
+  //  SOLVE BUTTON 
   const SLUG = 'two-sum';
 
   function updateSolveBtn() {
@@ -1038,11 +817,11 @@
     const text = document.getElementById('solve-text');
     if (status === 'solved') {
       btn.classList.add('solved');
-      icon.textContent = '✓';
+      icon.textContent = '';
       text.textContent = 'Solved!';
     } else {
       btn.classList.remove('solved');
-      icon.textContent = '○';
+      icon.textContent = '';
       text.textContent = 'Mark as Solved';
     }
     document.getElementById('solved-counter').textContent = Progress.solvedCount();
@@ -1056,7 +835,7 @@
     Streak.bump();
   }
 
-  // ── BUILD TOC ─────────────────────────────
+  //  BUILD TOC 
   buildTOC('#article-content', '#toc-container');
   updateSolveBtn();
 </script>
