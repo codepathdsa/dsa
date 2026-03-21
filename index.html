@@ -8,9 +8,283 @@
   <meta property="og:title" content="CodePath — Written DSA Prep. Free Forever.">
   <meta property="og:description" content="500+ problems with deep written editorials. All free. No subscription needed.">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="stylesheet" href="style.css">
+  <!-- SHARED DESIGN SYSTEM -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,500&family=JetBrains+Mono:wght@400;500;600&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    /* ── HOME-SPECIFIC STYLES ── */
+/* CodePath — Shared Design System */
+
+/* ── TOKENS ─────────────────────────────── */
+:root {
+  --bg:        #f7f5f0;
+  --bg2:       #f0ede5;
+  --surface:   #ffffff;
+  --surface2:  #faf9f6;
+  --border:    #e2ddd4;
+  --border2:   #cdc8bc;
+
+  --ink:       #1a1814;
+  --ink2:      #3d3a33;
+  --muted:     #8a8478;
+  --faint:     #b8b3a8;
+
+  --green:     #1a6b4a;
+  --green-bg:  #e8f5ef;
+  --amber:     #92610a;
+  --amber-bg:  #fef3dc;
+  --red:       #9b2020;
+  --red-bg:    #fde8e8;
+  --blue:      #1a4d8f;
+  --blue-bg:   #e8f0fc;
+
+  --accent:    #c94b0c;       /* editorial orange-red — distinctive */
+  --accent-bg: #fdf0ea;
+
+  --mono:      'JetBrains Mono', 'Courier New', monospace;
+  --serif:     'Fraunces', Georgia, serif;
+  --sans:      'Instrument Sans', system-ui, sans-serif;
+
+  --radius:    6px;
+  --radius-lg: 12px;
+  --shadow:    0 1px 3px rgba(26,24,20,0.08), 0 4px 16px rgba(26,24,20,0.06);
+  --shadow-lg: 0 4px 24px rgba(26,24,20,0.12), 0 16px 48px rgba(26,24,20,0.08);
+}
+
+/* ── RESET ──────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 1rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+img { max-width: 100%; display: block; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code { font-family: var(--mono); }
+
+/* ── NAV ────────────────────────────────── */
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(247,245,240,0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 5%;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-logo {
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+}
+
+.nav-logo span { color: var(--accent); }
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  list-style: none;
+}
+
+.nav-links a {
+  color: var(--ink2);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.nav-links a:hover { color: var(--ink); }
+
+.nav-links a.active { color: var(--accent); font-weight: 600; }
+
+.nav-cta {
+  background: var(--ink) !important;
+  color: var(--bg) !important;
+  padding: 7px 18px;
+  border-radius: var(--radius);
+  font-weight: 600 !important;
+  font-size: 0.85rem !important;
+  transition: background 0.15s !important;
+}
+.nav-cta:hover { background: var(--accent) !important; text-decoration: none !important; }
+
+/* ── LAYOUT ─────────────────────────────── */
+.container {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 0 5%;
+}
+
+.container--narrow {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 0 5%;
+}
+
+/* ── TAGS / BADGES ──────────────────────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.badge--easy   { background: var(--green-bg); color: var(--green); }
+.badge--medium { background: var(--amber-bg); color: var(--amber); }
+.badge--hard   { background: var(--red-bg);   color: var(--red);   }
+.badge--topic  { background: var(--blue-bg);  color: var(--blue);  }
+.badge--new    { background: var(--accent-bg); color: var(--accent); }
+
+/* ── BUTTONS ────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 11px 22px;
+  border-radius: var(--radius);
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.btn--primary {
+  background: var(--ink);
+  color: var(--bg);
+}
+.btn--primary:hover {
+  background: var(--accent);
+  text-decoration: none;
+  color: white;
+}
+
+.btn--outline {
+  background: transparent;
+  color: var(--ink2);
+  border: 1px solid var(--border2);
+}
+.btn--outline:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--muted);
+  padding: 8px 14px;
+}
+.btn--ghost:hover {
+  background: var(--bg2);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+/* ── DIVIDER ────────────────────────────── */
+.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 40px 0;
+}
+
+/* ── FOOTER ─────────────────────────────── */
+.site-footer {
+  background: var(--ink);
+  color: rgba(247,245,240,0.6);
+  padding: 60px 5% 40px;
+  margin-top: 80px;
+}
+
+.footer-inner {
+  max-width: 1160px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 48px;
+  margin-bottom: 48px;
+}
+
+.footer-brand .nav-logo { color: var(--bg); }
+.footer-brand p {
+  margin-top: 12px;
+  font-size: 0.85rem;
+  line-height: 1.7;
+  max-width: 260px;
+}
+
+.footer-col h5 {
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(247,245,240,0.35);
+  margin-bottom: 14px;
+}
+
+.footer-col ul { list-style: none; }
+.footer-col li { margin-bottom: 9px; }
+.footer-col a {
+  color: rgba(247,245,240,0.6);
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.footer-col a:hover { color: var(--bg); }
+
+.footer-bottom {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding-top: 24px;
+  border-top: 1px solid rgba(247,245,240,0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+}
+
+/* ── UTILITIES ──────────────────────────── */
+.text-muted   { color: var(--muted); }
+.text-accent  { color: var(--accent); }
+.text-serif   { font-family: var(--serif); }
+.text-mono    { font-family: var(--mono); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .footer-inner { grid-template-columns: 1fr 1fr; gap: 32px; }
+}
+
+  </style>
+
+  <style>
+    /*  HOME-SPECIFIC STYLES  */
 
     /* HERO */
     .hero {
@@ -234,7 +508,7 @@
       color: var(--ink2);
     }
 
-    /* ── WHY SECTION ── */
+    /*  WHY SECTION  */
     .why-section {
       padding: 100px 5%;
       background: var(--bg);
@@ -325,7 +599,7 @@
     .compare-cell.paid { color: var(--amber); font-size: 0.78rem; }
     .compare-cell.ours { background: rgba(201,75,12,0.04); }
 
-    /* ── TOPICS SECTION ── */
+    /*  TOPICS SECTION  */
     .topics-section {
       padding: 100px 5%;
       background: var(--surface);
@@ -416,7 +690,7 @@
       color: var(--green);
     }
 
-    /* ── ROADMAP SECTION ── */
+    /*  ROADMAP SECTION  */
     .roadmap-section {
       padding: 100px 5%;
       background: var(--bg);
@@ -525,7 +799,7 @@
       white-space: nowrap;
     }
 
-    /* ── EDITORIAL EXCERPT SECTION ── */
+    /*  EDITORIAL EXCERPT SECTION  */
     .editorial-section {
       padding: 100px 5%;
       background: var(--surface);
@@ -604,7 +878,7 @@
       gap: 4px;
     }
 
-    /* ── CTA SECTION ── */
+    /*  CTA SECTION  */
     .cta-section {
       padding: 120px 5%;
       background: var(--ink);
@@ -682,7 +956,7 @@
       color: rgba(247,245,240,0.3);
     }
 
-    /* ── RESPONSIVE ── */
+    /*  RESPONSIVE  */
     @media (max-width: 900px) {
       .hero-inner { grid-template-columns: 1fr; gap: 40px; }
       .why-grid { grid-template-columns: 1fr; }
@@ -695,6 +969,277 @@
       .hero-headline { font-size: 2.3rem; }
     }
   </style>
+  <style>
+/* CodePath — Shared Design System */
+
+/* ── TOKENS ─────────────────────────────── */
+:root {
+  --bg:        #f7f5f0;
+  --bg2:       #f0ede5;
+  --surface:   #ffffff;
+  --surface2:  #faf9f6;
+  --border:    #e2ddd4;
+  --border2:   #cdc8bc;
+
+  --ink:       #1a1814;
+  --ink2:      #3d3a33;
+  --muted:     #8a8478;
+  --faint:     #b8b3a8;
+
+  --green:     #1a6b4a;
+  --green-bg:  #e8f5ef;
+  --amber:     #92610a;
+  --amber-bg:  #fef3dc;
+  --red:       #9b2020;
+  --red-bg:    #fde8e8;
+  --blue:      #1a4d8f;
+  --blue-bg:   #e8f0fc;
+
+  --accent:    #c94b0c;       /* editorial orange-red — distinctive */
+  --accent-bg: #fdf0ea;
+
+  --mono:      'JetBrains Mono', 'Courier New', monospace;
+  --serif:     'Fraunces', Georgia, serif;
+  --sans:      'Instrument Sans', system-ui, sans-serif;
+
+  --radius:    6px;
+  --radius-lg: 12px;
+  --shadow:    0 1px 3px rgba(26,24,20,0.08), 0 4px 16px rgba(26,24,20,0.06);
+  --shadow-lg: 0 4px 24px rgba(26,24,20,0.12), 0 16px 48px rgba(26,24,20,0.08);
+}
+
+/* ── RESET ──────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 1rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+img { max-width: 100%; display: block; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code { font-family: var(--mono); }
+
+/* ── NAV ────────────────────────────────── */
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(247,245,240,0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 5%;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-logo {
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+}
+
+.nav-logo span { color: var(--accent); }
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  list-style: none;
+}
+
+.nav-links a {
+  color: var(--ink2);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.nav-links a:hover { color: var(--ink); }
+
+.nav-links a.active { color: var(--accent); font-weight: 600; }
+
+.nav-cta {
+  background: var(--ink) !important;
+  color: var(--bg) !important;
+  padding: 7px 18px;
+  border-radius: var(--radius);
+  font-weight: 600 !important;
+  font-size: 0.85rem !important;
+  transition: background 0.15s !important;
+}
+.nav-cta:hover { background: var(--accent) !important; text-decoration: none !important; }
+
+/* ── LAYOUT ─────────────────────────────── */
+.container {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 0 5%;
+}
+
+.container--narrow {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 0 5%;
+}
+
+/* ── TAGS / BADGES ──────────────────────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.badge--easy   { background: var(--green-bg); color: var(--green); }
+.badge--medium { background: var(--amber-bg); color: var(--amber); }
+.badge--hard   { background: var(--red-bg);   color: var(--red);   }
+.badge--topic  { background: var(--blue-bg);  color: var(--blue);  }
+.badge--new    { background: var(--accent-bg); color: var(--accent); }
+
+/* ── BUTTONS ────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 11px 22px;
+  border-radius: var(--radius);
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.btn--primary {
+  background: var(--ink);
+  color: var(--bg);
+}
+.btn--primary:hover {
+  background: var(--accent);
+  text-decoration: none;
+  color: white;
+}
+
+.btn--outline {
+  background: transparent;
+  color: var(--ink2);
+  border: 1px solid var(--border2);
+}
+.btn--outline:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--muted);
+  padding: 8px 14px;
+}
+.btn--ghost:hover {
+  background: var(--bg2);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+/* ── DIVIDER ────────────────────────────── */
+.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 40px 0;
+}
+
+/* ── FOOTER ─────────────────────────────── */
+.site-footer {
+  background: var(--ink);
+  color: rgba(247,245,240,0.6);
+  padding: 60px 5% 40px;
+  margin-top: 80px;
+}
+
+.footer-inner {
+  max-width: 1160px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 48px;
+  margin-bottom: 48px;
+}
+
+.footer-brand .nav-logo { color: var(--bg); }
+.footer-brand p {
+  margin-top: 12px;
+  font-size: 0.85rem;
+  line-height: 1.7;
+  max-width: 260px;
+}
+
+.footer-col h5 {
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(247,245,240,0.35);
+  margin-bottom: 14px;
+}
+
+.footer-col ul { list-style: none; }
+.footer-col li { margin-bottom: 9px; }
+.footer-col a {
+  color: rgba(247,245,240,0.6);
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.footer-col a:hover { color: var(--bg); }
+
+.footer-bottom {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding-top: 24px;
+  border-top: 1px solid rgba(247,245,240,0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+}
+
+/* ── UTILITIES ──────────────────────────── */
+.text-muted   { color: var(--muted); }
+.text-accent  { color: var(--accent); }
+.text-serif   { font-family: var(--serif); }
+.text-mono    { font-family: var(--mono); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .footer-inner { grid-template-columns: 1fr 1fr; gap: 32px; }
+}
+
+</style>
 </head>
 <body>
 
@@ -706,31 +1251,31 @@
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#topics">Topics</a></li>
     <li><a href="#" title="Solved problems" style="color:var(--muted);font-size:0.82rem;">
-      ✓ <span id="solved-counter">0</span> solved
+       <span id="solved-counter">0</span> solved
     </a></li>
-    <li><a href="problems.html" class="nav-cta">Start Free →</a></li>
+    <li><a href="problems.html" class="nav-cta">Start Free </a></li>
   </ul>
 </nav>
 
-<!-- ═══════════════════════════════════════
+<!-- 
      HERO
-════════════════════════════════════════ -->
+ -->
 <section class="hero">
   <div class="hero-inner">
 
     <!-- LEFT COPY -->
     <div>
-      <div class="hero-eyebrow">Written-first · No videos · No paywall</div>
+      <div class="hero-eyebrow">Written-first  No videos  No paywall</div>
       <h1 class="hero-headline">
         Learn DSA the way<br>
         <em>books taught CS.</em>
       </h1>
       <p class="hero-sub">
-        Deep written editorials for every problem. Clear explanations, multiple approaches, complexity analysis — all free. No subscription required. Ever.
+        Deep written editorials for every problem. Clear explanations, multiple approaches, complexity analysis  all free. No subscription required. Ever.
       </p>
       <div class="hero-actions">
-        <a href="problems.html" class="btn btn--primary">Start the Roadmap →</a>
-        <a href="#why" class="btn btn--outline">Why written? ↓</a>
+        <a href="problems.html" class="btn btn--primary">Start the Roadmap </a>
+        <a href="#why" class="btn btn--outline">Why written? </a>
       </div>
       <div class="hero-proof">
         <div class="proof-item">
@@ -744,19 +1289,19 @@
         </div>
         <div class="proof-divider"></div>
         <div class="proof-item">
-          <span class="proof-num">3×</span>
+          <span class="proof-num">3</span>
           <span class="proof-label">Faster to read than watch</span>
         </div>
       </div>
     </div>
 
-    <!-- RIGHT — EDITORIAL PREVIEW CARD -->
+    <!-- RIGHT  EDITORIAL PREVIEW CARD -->
     <div class="preview-card reveal">
       <div class="preview-header">
         <div class="preview-dot" style="background:#ff5f57;"></div>
         <div class="preview-dot" style="background:#febc2e;"></div>
         <div class="preview-dot" style="background:#28c840;"></div>
-        <span class="preview-title">two-sum.html — CodePath Editorial</span>
+        <span class="preview-title">two-sum.html  CodePath Editorial</span>
       </div>
       <div class="preview-body">
         <div class="preview-problem-title">#1. Two Sum</div>
@@ -768,15 +1313,15 @@
 
         <div class="preview-section-label">Intuition</div>
         <p class="preview-text">
-          The brute force checks every pair in O(n²). But we can do better: for each number <code>x</code>, we need to know if <code>target − x</code> already exists. A hash map gives us O(1) lookup…
+          The brute force checks every pair in O(n). But we can do better: for each number <code>x</code>, we need to know if <code>target  x</code> already exists. A hash map gives us O(1) lookup
         </p>
 
         <div class="preview-insight">
-          <p>🔑 Key insight: store what you've <em>seen</em>, check what you <em>need</em>. One pass, no second loop.</p>
+          <p>ð Key insight: store what you've <em>seen</em>, check what you <em>need</em>. One pass, no second loop.</p>
         </div>
 
-        <div class="preview-section-label">Approach 2 — HashMap (optimal)</div>
-        <div class="preview-code"><span class="cm"># O(n) time · O(n) space</span>
+        <div class="preview-section-label">Approach 2  HashMap (optimal)</div>
+        <div class="preview-code"><span class="cm"># O(n) time  O(n) space</span>
 <span class="kw">def</span> <span class="fn">twoSum</span>(nums, target):
     seen = {}
     <span class="kw">for</span> i, n <span class="kw">in</span> <span class="fn">enumerate</span>(nums):
@@ -790,16 +1335,16 @@
           <span class="cpill">T: O(n)</span>
           <span class="cpill">S: O(n)</span>
         </div>
-        <span>3 approaches · 5 min read</span>
+        <span>3 approaches  5 min read</span>
       </div>
     </div>
 
   </div>
 </section>
 
-<!-- ═══════════════════════════════════════
+<!-- 
      WHY WRITTEN
-════════════════════════════════════════ -->
+ -->
 <section class="why-section" id="why">
   <div class="why-grid">
     <div class="reveal">
@@ -822,37 +1367,37 @@
         </div>
         <div class="compare-row">
           <div class="compare-cell feature">Written editorials</div>
-          <div class="compare-cell paid">💰 Paid only</div>
-          <div class="compare-cell yes ours">✓ All free</div>
+          <div class="compare-cell paid">ð Paid only</div>
+          <div class="compare-cell yes ours"> All free</div>
         </div>
         <div class="compare-row">
           <div class="compare-cell feature">Company tags</div>
-          <div class="compare-cell paid">💰 Paid only</div>
-          <div class="compare-cell yes ours">✓ All free</div>
+          <div class="compare-cell paid">ð Paid only</div>
+          <div class="compare-cell yes ours"> All free</div>
         </div>
         <div class="compare-row">
           <div class="compare-cell feature">Multiple approaches</div>
           <div class="compare-cell no">Video only</div>
-          <div class="compare-cell yes ours">✓ Every problem</div>
+          <div class="compare-cell yes ours"> Every problem</div>
         </div>
         <div class="compare-row">
           <div class="compare-cell feature">Skimmable content</div>
-          <div class="compare-cell no">✕ Can't skim video</div>
-          <div class="compare-cell yes ours">✓ Written = skimmable</div>
+          <div class="compare-cell no"> Can't skim video</div>
+          <div class="compare-cell yes ours"> Written = skimmable</div>
         </div>
         <div class="compare-row">
           <div class="compare-cell feature">Complexity analysis</div>
-          <div class="compare-cell paid">💰 Paid only</div>
-          <div class="compare-cell yes ours">✓ All free</div>
+          <div class="compare-cell paid">ð Paid only</div>
+          <div class="compare-cell yes ours"> All free</div>
         </div>
         <div class="compare-row">
           <div class="compare-cell feature">Progress tracking</div>
-          <div class="compare-cell paid">💰 Paid only</div>
-          <div class="compare-cell yes ours">✓ All free</div>
+          <div class="compare-cell paid">ð Paid only</div>
+          <div class="compare-cell yes ours"> All free</div>
         </div>
         <div class="compare-row">
           <div class="compare-cell feature">Price</div>
-          <div class="compare-cell paid">$40–$150/yr</div>
+          <div class="compare-cell paid">$40$150/yr</div>
           <div class="compare-cell yes ours">$0 forever</div>
         </div>
       </div>
@@ -860,21 +1405,21 @@
   </div>
 </section>
 
-<!-- ═══════════════════════════════════════
+<!-- 
      TOPICS
-════════════════════════════════════════ -->
+ -->
 <section class="topics-section" id="topics">
   <div class="topics-header">
     <div>
       <div class="section-eyebrow">Curriculum</div>
       <h2 class="section-title">Every topic. Depth over breadth.</h2>
     </div>
-    <a href="problems.html" class="btn btn--outline">View all problems →</a>
+    <a href="problems.html" class="btn btn--outline">View all problems </a>
   </div>
 
   <div class="topics-grid">
     <a href="problems.html?topic=arrays" class="topic-card reveal">
-      <div class="topic-icon">📐</div>
+      <div class="topic-icon">ð</div>
       <div class="topic-name">Arrays & Hashing</div>
       <div class="topic-meta">
         <span class="topic-count">48 problems</span>
@@ -882,7 +1427,7 @@
       </div>
     </a>
     <a href="problems.html?topic=two-pointers" class="topic-card reveal">
-      <div class="topic-icon">↔️</div>
+      <div class="topic-icon"></div>
       <div class="topic-name">Two Pointers</div>
       <div class="topic-meta">
         <span class="topic-count">22 problems</span>
@@ -890,7 +1435,7 @@
       </div>
     </a>
     <a href="problems.html?topic=sliding-window" class="topic-card reveal">
-      <div class="topic-icon">🪟</div>
+      <div class="topic-icon">ð</div>
       <div class="topic-name">Sliding Window</div>
       <div class="topic-meta">
         <span class="topic-count">18 problems</span>
@@ -898,7 +1443,7 @@
       </div>
     </a>
     <a href="problems.html?topic=binary-search" class="topic-card reveal">
-      <div class="topic-icon">🔍</div>
+      <div class="topic-icon">ð</div>
       <div class="topic-name">Binary Search</div>
       <div class="topic-meta">
         <span class="topic-count">24 problems</span>
@@ -906,7 +1451,7 @@
       </div>
     </a>
     <a href="problems.html?topic=linked-list" class="topic-card reveal">
-      <div class="topic-icon">🔗</div>
+      <div class="topic-icon">ð</div>
       <div class="topic-name">Linked Lists</div>
       <div class="topic-meta">
         <span class="topic-count">31 problems</span>
@@ -914,7 +1459,7 @@
       </div>
     </a>
     <a href="problems.html?topic=trees" class="topic-card reveal">
-      <div class="topic-icon">🌳</div>
+      <div class="topic-icon">ð</div>
       <div class="topic-name">Binary Trees</div>
       <div class="topic-meta">
         <span class="topic-count">45 problems</span>
@@ -922,7 +1467,7 @@
       </div>
     </a>
     <a href="problems.html?topic=dp" class="topic-card reveal">
-      <div class="topic-icon">🧩</div>
+      <div class="topic-icon">ð</div>
       <div class="topic-name">Dynamic Programming</div>
       <div class="topic-meta">
         <span class="topic-count">65 problems</span>
@@ -930,7 +1475,7 @@
       </div>
     </a>
     <a href="problems.html?topic=graphs" class="topic-card reveal">
-      <div class="topic-icon">🗺️</div>
+      <div class="topic-icon">ð</div>
       <div class="topic-name">Graphs</div>
       <div class="topic-meta">
         <span class="topic-count">52 problems</span>
@@ -940,9 +1485,9 @@
   </div>
 </section>
 
-<!-- ═══════════════════════════════════════
+<!-- 
      ROADMAP
-════════════════════════════════════════ -->
+ -->
 <section class="roadmap-section" id="roadmap">
   <div class="roadmap-inner">
     <div class="roadmap-header">
@@ -957,9 +1502,9 @@
           <div class="phase-line"></div>
         </div>
         <div class="phase-content">
-          <div class="phase-tag">Weeks 1–3</div>
+          <div class="phase-tag">Weeks 13</div>
           <div class="phase-title">Foundations</div>
-          <p class="phase-desc">Build the mental models. Arrays, hashing, two pointers, and sliding window. Most interview problems reduce to patterns from this phase. Do not skip basics — they compound.</p>
+          <p class="phase-desc">Build the mental models. Arrays, hashing, two pointers, and sliding window. Most interview problems reduce to patterns from this phase. Do not skip basics  they compound.</p>
           <div class="phase-topics">
             <span class="phase-topic-chip">Arrays & Hashing</span>
             <span class="phase-topic-chip">Two Pointers</span>
@@ -975,7 +1520,7 @@
           <div class="phase-line"></div>
         </div>
         <div class="phase-content">
-          <div class="phase-tag">Weeks 4–7</div>
+          <div class="phase-tag">Weeks 47</div>
           <div class="phase-title">Core Data Structures</div>
           <p class="phase-desc">The structures that show up in 70% of interviews. Linked lists, binary trees, BSTs, heaps. Learn traversals, insertions, and the classic problems that test each structure.</p>
           <div class="phase-topics">
@@ -994,11 +1539,11 @@
           <div class="phase-line"></div>
         </div>
         <div class="phase-content">
-          <div class="phase-tag">Weeks 8–12</div>
+          <div class="phase-tag">Weeks 812</div>
           <div class="phase-title">Algorithms</div>
           <p class="phase-desc">Graphs, DP, backtracking. These are the hard-round problems. Spend the most time here. Learn BFS/DFS patterns, then DP state design, then pruning in backtracking.</p>
           <div class="phase-topics">
-            <span class="phase-topic-chip">Graphs — BFS/DFS</span>
+            <span class="phase-topic-chip">Graphs  BFS/DFS</span>
             <span class="phase-topic-chip">Dynamic Programming</span>
             <span class="phase-topic-chip">Backtracking</span>
             <span class="phase-topic-chip">Greedy</span>
@@ -1013,7 +1558,7 @@
           <div class="phase-line"></div>
         </div>
         <div class="phase-content">
-          <div class="phase-tag">Weeks 13–16</div>
+          <div class="phase-tag">Weeks 1316</div>
           <div class="phase-title">Interview Sprint</div>
           <p class="phase-desc">Revise with company-tagged lists. Practice CS fundamentals (OS, DBMS, CN). Mock interviews. System design basics. This is your final polish before the real rounds.</p>
           <div class="phase-topics">
@@ -1029,9 +1574,9 @@
   </div>
 </section>
 
-<!-- ═══════════════════════════════════════
+<!-- 
      EDITORIAL EXCERPTS
-════════════════════════════════════════ -->
+ -->
 <section class="editorial-section">
   <div style="max-width:1160px;margin:0 auto;">
     <div class="section-eyebrow reveal">Sample Editorials</div>
@@ -1048,12 +1593,12 @@
         </div>
         <div class="editorial-card-title">#1. Two Sum</div>
         <p class="editorial-card-excerpt">
-          Three approaches covered: brute force O(n²), sorting + two pointers O(n log n), and the optimal HashMap O(n). Includes a dry-run trace, edge cases, and interview follow-up questions.
+          Three approaches covered: brute force O(n), sorting + two pointers O(n log n), and the optimal HashMap O(n). Includes a dry-run trace, edge cases, and interview follow-up questions.
         </p>
       </div>
       <div class="editorial-card-bottom">
-        <span>3 approaches · ~5 min read</span>
-        <span class="read-link">Read editorial →</span>
+        <span>3 approaches  ~5 min read</span>
+        <span class="read-link">Read editorial </span>
       </div>
     </a>
 
@@ -1070,8 +1615,8 @@
         </p>
       </div>
       <div class="editorial-card-bottom">
-        <span>2 approaches · ~4 min read</span>
-        <span class="read-link">Read editorial →</span>
+        <span>2 approaches  ~4 min read</span>
+        <span class="read-link">Read editorial </span>
       </div>
     </a>
 
@@ -1084,12 +1629,12 @@
         </div>
         <div class="editorial-card-title">#20. Valid Parentheses</div>
         <p class="editorial-card-excerpt">
-          The classic stack problem — but explained through the lens of "what does the stack remember?" Includes the HashMap trick, 5 edge cases you must test, and the follow-up: minimum removals.
+          The classic stack problem  but explained through the lens of "what does the stack remember?" Includes the HashMap trick, 5 edge cases you must test, and the follow-up: minimum removals.
         </p>
       </div>
       <div class="editorial-card-bottom">
-        <span>2 approaches · ~4 min read</span>
-        <span class="read-link">Read editorial →</span>
+        <span>2 approaches  ~4 min read</span>
+        <span class="read-link">Read editorial </span>
       </div>
     </a>
 
@@ -1102,20 +1647,20 @@
         </div>
         <div class="editorial-card-title">#3. Longest Substring Without Repeating Characters</div>
         <p class="editorial-card-excerpt">
-          Why the naive approach fails and how sliding window eliminates redundant work. The "jump" optimization with a hashmap versus a set — and when each is better.
+          Why the naive approach fails and how sliding window eliminates redundant work. The "jump" optimization with a hashmap versus a set  and when each is better.
         </p>
       </div>
       <div class="editorial-card-bottom">
-        <span>3 approaches · ~6 min read</span>
-        <span class="read-link">Read editorial →</span>
+        <span>3 approaches  ~6 min read</span>
+        <span class="read-link">Read editorial </span>
       </div>
     </a>
   </div>
 </section>
 
-<!-- ═══════════════════════════════════════
+<!-- 
      FINAL CTA
-════════════════════════════════════════ -->
+ -->
 <section class="cta-section">
   <div class="cta-eyebrow">No credit card. No paywall.</div>
   <h2 class="cta-title">
@@ -1124,10 +1669,10 @@
   </h2>
   <p class="cta-sub">500+ written editorials. Structured roadmap. Company tags. All free, all the time.</p>
   <div class="cta-buttons">
-    <a href="problems.html" class="btn btn--inverted">Browse All Problems →</a>
+    <a href="problems.html" class="btn btn--inverted">Browse All Problems </a>
     <a href="#roadmap" class="btn--ghost-light">See the Roadmap</a>
   </div>
-  <p class="cta-footnote">Built by engineers frustrated by paywalls. ⭐ Star us on GitHub.</p>
+  <p class="cta-footnote">Built by engineers frustrated by paywalls.  Star us on GitHub.</p>
 </section>
 
 <!-- FOOTER -->
@@ -1168,11 +1713,249 @@
     </div>
   </div>
   <div class="footer-bottom">
-    <span>© 2026 CodePath · Free forever · Open source</span>
-    <span>Made with ♥ for every engineer — from tier-3 colleges to global unis</span>
+    <span> 2026 CodePath  Free forever  Open source</span>
+    <span>Made with  for every engineer  from tier-3 colleges to global unis</span>
   </div>
 </footer>
 
-<script src="js/app.js"></script>
+<script>
+/* =========================================
+   ALGOFORGE — Shared JS Utilities
+   ========================================= */
+
+'use strict';
+
+// ── PROGRESS STORE ────────────────────────
+// Uses localStorage so progress persists across pages
+const Progress = (() => {
+  const KEY = 'cp_progress';
+
+  function load() {
+    try { return JSON.parse(localStorage.getItem(KEY)) || {}; }
+    catch { return {}; }
+  }
+
+  function save(data) {
+    try { localStorage.setItem(KEY, JSON.stringify(data)); }
+    catch {}
+  }
+
+  function markSolved(slug) {
+    const d = load();
+    d[slug] = { status: 'solved', ts: Date.now() };
+    save(d);
+    _emit('progress:change', { slug, status: 'solved' });
+  }
+
+  function markReview(slug) {
+    const d = load();
+    d[slug] = { status: 'review', ts: Date.now() };
+    save(d);
+    _emit('progress:change', { slug, status: 'review' });
+  }
+
+  function clear(slug) {
+    const d = load();
+    delete d[slug];
+    save(d);
+    _emit('progress:change', { slug, status: null });
+  }
+
+  function getStatus(slug) {
+    return (load()[slug] || {}).status || null;
+  }
+
+  function getAll() { return load(); }
+
+  function solvedCount() {
+    return Object.values(load()).filter(v => v.status === 'solved').length;
+  }
+
+  function _emit(event, detail) {
+    document.dispatchEvent(new CustomEvent(event, { detail }));
+  }
+
+  return { markSolved, markReview, clear, getStatus, getAll, solvedCount };
+})();
+
+// ── STREAK TRACKER ────────────────────────
+const Streak = (() => {
+  const KEY = 'cp_streak';
+
+  function today() {
+    return new Date().toISOString().slice(0, 10);
+  }
+
+  function bump() {
+    const data = JSON.parse(localStorage.getItem(KEY) || '{"count":0,"last":""}');
+    const t = today();
+    if (data.last === t) return data.count;
+
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yStr = yesterday.toISOString().slice(0, 10);
+
+    if (data.last === yStr) {
+      data.count++;
+    } else if (data.last !== t) {
+      data.count = 1;
+    }
+    data.last = t;
+    localStorage.setItem(KEY, JSON.stringify(data));
+    return data.count;
+  }
+
+  function get() {
+    return JSON.parse(localStorage.getItem(KEY) || '{"count":0,"last":""}').count;
+  }
+
+  return { bump, get };
+})();
+
+// ── SEARCH ────────────────────────────────
+function initSearch(inputEl, rowsSelector) {
+  if (!inputEl) return;
+  inputEl.addEventListener('input', () => {
+    const q = inputEl.value.toLowerCase().trim();
+    document.querySelectorAll(rowsSelector).forEach(row => {
+      const text = row.textContent.toLowerCase();
+      row.style.display = (!q || text.includes(q)) ? '' : 'none';
+    });
+  });
+}
+
+// ── FILTER PILLS ─────────────────────────
+function initFilters(pillsSelector, rowsSelector, dataAttr) {
+  const pills = document.querySelectorAll(pillsSelector);
+  if (!pills.length) return;
+
+  pills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      pills.forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      const val = pill.dataset.filter;
+      document.querySelectorAll(rowsSelector).forEach(row => {
+        row.style.display = (val === 'all' || row.dataset[dataAttr] === val) ? '' : 'none';
+      });
+    });
+  });
+}
+
+// ── COPY CODE BUTTON ─────────────────────
+function initCopyButtons() {
+  document.querySelectorAll('pre').forEach(pre => {
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = 'Copy';
+    btn.setAttribute('aria-label', 'Copy code');
+    pre.style.position = 'relative';
+    pre.appendChild(btn);
+    btn.addEventListener('click', () => {
+      navigator.clipboard.writeText(pre.querySelector('code')?.textContent || pre.textContent)
+        .then(() => {
+          btn.textContent = 'Copied!';
+          setTimeout(() => btn.textContent = 'Copy', 1800);
+        });
+    });
+  });
+}
+
+// ── SMOOTH REVEAL ─────────────────────────
+function initReveal() {
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.reveal').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(18px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    obs.observe(el);
+  });
+}
+
+// ── PROBLEM STATUS UI ─────────────────────
+function renderStatusDot(slug, container) {
+  const status = Progress.getStatus(slug);
+  const colors = { solved: '#1a6b4a', review: '#92610a', null: '#e2ddd4' };
+  const dot = container.querySelector('.status-dot');
+  if (dot) {
+    dot.style.background = colors[status] || colors[null];
+    dot.title = status ? status.charAt(0).toUpperCase() + status.slice(1) : 'Not attempted';
+  }
+}
+
+// ── READING PROGRESS BAR ─────────────────
+function initReadingBar() {
+  const bar = document.getElementById('reading-bar');
+  if (!bar) return;
+  window.addEventListener('scroll', () => {
+    const h = document.body.scrollHeight - window.innerHeight;
+    bar.style.width = Math.min(100, (window.scrollY / h) * 100) + '%';
+  }, { passive: true });
+}
+
+// ── TABLE OF CONTENTS ─────────────────────
+function buildTOC(contentSelector, tocSelector) {
+  const content = document.querySelector(contentSelector);
+  const toc = document.querySelector(tocSelector);
+  if (!content || !toc) return;
+
+  const headings = content.querySelectorAll('h2, h3');
+  if (!headings.length) return;
+
+  const ul = document.createElement('ul');
+  ul.className = 'toc-list';
+
+  headings.forEach((h, i) => {
+    if (!h.id) h.id = 'heading-' + i;
+    const li = document.createElement('li');
+    li.className = h.tagName === 'H3' ? 'toc-sub' : '';
+    const a = document.createElement('a');
+    a.href = '#' + h.id;
+    a.textContent = h.textContent;
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      h.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    li.appendChild(a);
+    ul.appendChild(li);
+  });
+
+  toc.appendChild(ul);
+
+  // Highlight active section
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = toc.querySelector(`a[href="#${entry.target.id}"]`);
+      if (link) link.classList.toggle('active', entry.isIntersecting);
+    });
+  }, { rootMargin: '0px 0px -60% 0px' });
+
+  headings.forEach(h => obs.observe(h));
+}
+
+// ── INIT ON DOM READY ─────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  initReveal();
+  initCopyButtons();
+  initReadingBar();
+
+  // Update nav solved counter
+  const counter = document.getElementById('solved-counter');
+  if (counter) counter.textContent = Progress.solvedCount();
+
+  // Streak display
+  const streakEl = document.getElementById('streak-display');
+  if (streakEl) streakEl.textContent = '🔥 ' + Streak.get();
+});
+
+</script>
 </body>
 </html>
