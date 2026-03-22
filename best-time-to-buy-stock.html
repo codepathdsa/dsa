@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Best Time to Buy and Sell Stock — Full Editorial | CodePath</title>
+  <meta name="description" content="Deep editorial for Best Time to Buy and Sell Stock (#121). The 'track minimum so far' pattern. One pass, O(n). Learn why this is a cousin of Kadane's algorithm.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,900&family=JetBrains+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="editorial.css">
+</head>
+<body>
+<div id="reading-bar"></div>
+
+<nav class="site-nav">
+  <a class="nav-logo" href="index.html">Code<span>Path</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html#practice">Practice</a></li>
+    <li><a href="index.html#why">Why Written?</a></li>
+    <li><a href="#" style="color:var(--muted);font-size:0.82rem;">✓ <span id="solved-counter">0</span> solved</a></li>
+    <li><a href="index.html#practice" class="nav-cta">Back to Practice →</a></li>
+  </ul>
+</nav>
+
+<div class="editorial-layout">
+
+  <article>
+    <div class="article-header">
+      <div class="article-breadcrumb">
+        <a href="index.html#practice">Practice</a>
+        <span>›</span>
+        <span>Sliding Window</span>
+        <span>›</span>
+        <span>Best Time to Buy and Sell Stock</span>
+      </div>
+
+      <h1 class="article-title">#121. Best Time to Buy and Sell Stock</h1>
+
+      <div class="article-meta">
+        <span class="badge badge--easy">Easy</span>
+        <span class="badge badge--topic">Arrays</span>
+        <span class="badge badge--topic">Sliding Window</span>
+        <span class="badge badge--topic">Greedy</span>
+      </div>
+
+      <div class="article-stats">
+        <span>⏱ 5 min read</span>
+        <span>📐 2 approaches</span>
+        <span>🏢 Amazon · Goldman · Facebook · Apple</span>
+        <span>✅ ~54% acceptance</span>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <button class="solve-btn" id="solve-btn" onclick="toggleSolved()">
+          <span id="solve-icon">○</span>
+          <span id="solve-text">Mark as Solved</span>
+        </button>
+        <a href="https://leetcode.com/problems/best-time-to-buy-and-sell-stock/" target="_blank" rel="noopener"
+           class="btn btn--outline" style="font-size:0.82rem;padding:8px 14px;">
+          Try on LeetCode ↗
+        </a>
+      </div>
+    </div>
+
+    <div class="article-content" id="article-content">
+
+      <h2 id="problem">Problem Statement</h2>
+
+      <p>You are given an array <code>prices</code> where <code>prices[i]</code> is the price of a given stock on the <code>i</code>th day.</p>
+
+      <p>You want to maximize your profit by choosing a <strong>single day to buy</strong> one stock and choosing a <strong>different day in the future to sell</strong> that stock.</p>
+
+      <p>Return the <em>maximum profit you can achieve</em>. If you cannot achieve any profit, return <code>0</code>.</p>
+
+      <div class="callout">
+        <p><strong>Example 1:</strong><br>
+        Input: <code>prices = [7,1,5,3,6,4]</code><br>
+        Output: <code>5</code><br>
+        Buy on day 2 (price = 1), sell on day 5 (price = 6). Profit = 6 − 1 = 5.</p>
+      </div>
+
+      <div class="callout">
+        <p><strong>Example 2:</strong><br>
+        Input: <code>prices = [7,6,4,3,1]</code><br>
+        Output: <code>0</code><br>
+        Prices only decrease — no profitable transaction is possible.</p>
+      </div>
+
+      <div class="callout warning">
+        <p><strong>Constraints:</strong> 1 ≤ prices.length ≤ 10⁵ · 0 ≤ prices[i] ≤ 10⁴</p>
+      </div>
+
+      <h2 id="intuition">Intuition — Think Like a Trader</h2>
+
+      <p>Let's reason about this the way a human would. As you read prices from left to right (day by day), you're looking for the biggest gap between a <em>past low</em> and a <em>future high</em>.</p>
+
+      <p>Here's the key observation: if you're on day <code>i</code> and thinking about selling, the best you could have done is to have bought at the <strong>lowest price seen so far</strong> (days 0 through i−1). That's it. That's the entire algorithm.</p>
+
+      <div class="insight">
+        <div class="insight-label">The One Insight</div>
+        <p>As you scan prices left to right, maintain <code>min_price</code> — the cheapest buy opportunity you've seen so far. At each day, the best profit <em>if you sold today</em> is <code>prices[i] − min_price</code>. Track the global maximum of this across all days. Update <code>min_price</code> if today's price is lower.</p>
+      </div>
+
+      <p>Notice: you never have to check all pairs. You're making a greedy decision: "the best buy price for any future sale is the minimum price seen before that sale day." One scan captures all possibilities.</p>
+
+      <p>This problem is a <strong>cousin of Kadane's Algorithm</strong> — if you convert the prices array to a daily profit array (difference between consecutive days), the maximum subarray sum equals the maximum buy-sell profit. Understanding this connection opens up the entire "stock problems" family.</p>
+
+      <h2 id="approaches">Approaches</h2>
+
+      <table class="complexity-table">
+        <thead>
+          <tr><th>Approach</th><th>Time</th><th>Space</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Brute Force (all pairs)</td>
+            <td>O(n²)</td>
+            <td>O(1)</td>
+            <td>Check every buy-sell pair. Clear but too slow.</td>
+          </tr>
+          <tr class="best">
+            <td>One Pass — Track Min ★</td>
+            <td>O(n)</td>
+            <td>O(1)</td>
+            <td>Single scan. Greedy choice at each step. Optimal.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="approach-tabs">
+        <div class="approach-tab active" data-tab="bf3">1. Brute Force</div>
+        <div class="approach-tab" data-tab="onepass">2. One Pass ★</div>
+      </div>
+
+      <div class="tab-panel active" id="bf3">
+        <h3>Approach 1 — Brute Force</h3>
+        <p>Try every pair (buy day i, sell day j where j > i). Track the maximum price[j] − price[i].</p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">Python</span><button class="copy-btn">Copy</button></div>
+          <pre><code><span class="c-kw">def</span> <span class="c-fn">maxProfit</span>(prices):
+    max_profit = <span class="c-num">0</span>
+    n = len(prices)
+    <span class="c-kw">for</span> i <span class="c-kw">in</span> <span class="c-fn">range</span>(n):
+        <span class="c-kw">for</span> j <span class="c-kw">in</span> <span class="c-fn">range</span>(i <span class="c-op">+</span> <span class="c-num">1</span>, n):
+            profit = prices[j] <span class="c-op">-</span> prices[i]
+            max_profit = <span class="c-fn">max</span>(max_profit, profit)
+    <span class="c-kw">return</span> max_profit</code></pre>
+        </div>
+        <p><strong>Complexity:</strong> Time O(n²) · Space O(1). Times out for large inputs.</p>
+      </div>
+
+      <div class="tab-panel" id="onepass">
+        <h3>Approach 2 — One Pass, Track Minimum ★</h3>
+
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">Python</span><button class="copy-btn">Copy</button></div>
+          <pre><code><span class="c-kw">def</span> <span class="c-fn">maxProfit</span>(prices):
+    min_price = <span class="c-fn">float</span>(<span class="c-str">'inf'</span>)  <span class="c-cm"># cheapest buy seen so far</span>
+    max_profit = <span class="c-num">0</span>
+
+    <span class="c-kw">for</span> price <span class="c-kw">in</span> prices:
+        <span class="c-kw">if</span> price <span class="c-op">&lt;</span> min_price:
+            min_price = price          <span class="c-cm"># found a cheaper buy day</span>
+        <span class="c-kw">elif</span> price <span class="c-op">-</span> min_price <span class="c-op">&gt;</span> max_profit:
+            max_profit = price <span class="c-op">-</span> min_price  <span class="c-cm"># better profit if sold today</span>
+
+    <span class="c-kw">return</span> max_profit</code></pre>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">Java</span><button class="copy-btn">Copy</button></div>
+          <pre><code><span class="c-kw">public</span> <span class="c-type">int</span> <span class="c-fn">maxProfit</span>(<span class="c-type">int</span>[] prices) {
+    <span class="c-type">int</span> minPrice = Integer.MAX_VALUE;
+    <span class="c-type">int</span> maxProfit = <span class="c-num">0</span>;
+
+    <span class="c-kw">for</span> (<span class="c-type">int</span> price : prices) {
+        <span class="c-kw">if</span> (price &lt; minPrice) {
+            minPrice = price;
+        } <span class="c-kw">else if</span> (price <span class="c-op">-</span> minPrice &gt; maxProfit) {
+            maxProfit = price <span class="c-op">-</span> minPrice;
+        }
+    }
+    <span class="c-kw">return</span> maxProfit;
+}</code></pre>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">C++</span><button class="copy-btn">Copy</button></div>
+          <pre><code><span class="c-type">int</span> <span class="c-fn">maxProfit</span>(vector&lt;<span class="c-type">int</span>&gt;&amp; prices) {
+    <span class="c-type">int</span> minPrice = INT_MAX, maxProfit = <span class="c-num">0</span>;
+    <span class="c-kw">for</span> (<span class="c-type">int</span> p : prices) {
+        minPrice = <span class="c-fn">min</span>(minPrice, p);
+        maxProfit = <span class="c-fn">max</span>(maxProfit, p <span class="c-op">-</span> minPrice);
+    }
+    <span class="c-kw">return</span> maxProfit;
+}</code></pre>
+        </div>
+
+        <p><strong>Complexity:</strong> Time O(n) · Space O(1). One pass, two variables.</p>
+      </div>
+
+      <h2 id="dry-run">Dry Run — prices = [7, 1, 5, 3, 6, 4]</h2>
+
+      <table class="dry-run-table">
+        <thead>
+          <tr><th>Day</th><th>price</th><th>min_price</th><th>profit today</th><th>max_profit</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>0</td><td>7</td><td>7</td><td>0</td><td>0</td></tr>
+          <tr><td>1</td><td>1</td><td>1 ← new min</td><td>0</td><td>0</td></tr>
+          <tr><td>2</td><td>5</td><td>1</td><td>5−1 = 4</td><td>4</td></tr>
+          <tr><td>3</td><td>3</td><td>1</td><td>3−1 = 2</td><td>4</td></tr>
+          <tr class="highlight"><td>4</td><td>6</td><td>1</td><td>6−1 = <strong>5</strong></td><td><strong>5</strong></td></tr>
+          <tr><td>5</td><td>4</td><td>1</td><td>4−1 = 3</td><td>5</td></tr>
+        </tbody>
+      </table>
+
+      <p>Return <strong>5</strong> ✓ (Buy at 1, sell at 6)</p>
+
+      <h2 id="edge-cases">Edge Cases to Test</h2>
+
+      <div class="callout warning">
+        <p><strong>1. All decreasing prices:</strong> <code>[7,6,5,4,3]</code> → <code>0</code>. Every day you compute a negative profit — max_profit stays 0. This is why we initialize max_profit = 0, not −∞.</p>
+      </div>
+      <div class="callout">
+        <p><strong>2. Single element:</strong> <code>[5]</code> → <code>0</code>. You need at least one buy and one sell day.</p>
+      </div>
+      <div class="callout">
+        <p><strong>3. Two elements — profit possible:</strong> <code>[1, 5]</code> → <code>4</code>. Works: min_price=1 on day 0, profit=4 on day 1.</p>
+      </div>
+      <div class="callout">
+        <p><strong>4. All same price:</strong> <code>[3,3,3,3]</code> → <code>0</code>. No profit, returns 0 correctly.</p>
+      </div>
+
+      <h2 id="follow-up">Interview Follow-Up Questions</h2>
+
+      <ul class="followup-list">
+        <li>
+          <span class="fq-icon">❓</span>
+          <div><strong>Best Time to Buy and Sell Stock II (#122) — multiple transactions allowed?</strong> Greedy: buy every valley, sell every peak. Or equivalently, sum all positive daily differences. Every upward move, capture it.</div>
+        </li>
+        <li>
+          <span class="fq-icon">❓</span>
+          <div><strong>Best Time to Buy and Sell Stock III (#123) — at most 2 transactions?</strong> DP with states: hold1, sold1, hold2, sold2. One pass through prices, update each state greedily.</div>
+        </li>
+        <li>
+          <span class="fq-icon">❓</span>
+          <div><strong>Best Time to Buy and Sell Stock with Cooldown (#309)?</strong> DP. After selling, you must wait one day. Three states: held, sold, resting.</div>
+        </li>
+        <li>
+          <span class="fq-icon">❓</span>
+          <div><strong>How is this related to Kadane's Algorithm?</strong> Convert <code>prices</code> to daily differences: <code>diff[i] = prices[i] - prices[i-1]</code>. The maximum buy-sell profit = maximum subarray sum of <code>diff</code>. Kadane's Algorithm solves that in O(n). They're the same problem in disguise.</div>
+        </li>
+      </ul>
+
+      <h2 id="pattern">The Pattern — Track Running Optimum</h2>
+
+      <div class="insight">
+        <div class="insight-label">Pattern: Running Min/Max + Greedy Choice</div>
+        <p>When you need the best outcome from a sequence where each step depends on a previously seen "optimal value" (like the cheapest buy price), scan once and maintain that running optimal. This powers: Jump Game (max reachable index), Gas Station (running prefix sum with tracking), and Trapping Rain Water. The unifying idea: you don't need to look backwards if you've already stored the best backwards value.</p>
+      </div>
+
+      <p>Related problems:</p>
+      <ul>
+        <li><strong>#53</strong> — Maximum Subarray (Kadane's — same structure)</li>
+        <li><strong>#122</strong> — Best Time to Buy and Sell Stock II (multiple transactions)</li>
+        <li><strong>#55</strong> — Jump Game (track max reachable)</li>
+        <li><strong>#309</strong> — Buy and Sell with Cooldown (DP states)</li>
+      </ul>
+
+      <div class="prev-next">
+        <a href="valid-palindrome.html" class="nav-problem prev">
+          <div class="nav-dir">← Previous</div>
+          <div class="nav-name">#125. Valid Palindrome</div>
+        </a>
+        <a href="longest-substring-without-repeating.html" class="nav-problem next">
+          <div class="nav-dir">Next →</div>
+          <div class="nav-name">#3. Longest Substring Without Repeating</div>
+        </a>
+      </div>
+
+    </div>
+  </article>
+
+  <aside class="article-sidebar">
+    <div class="meta-card">
+      <div class="meta-row"><span class="meta-label">Difficulty</span><span class="badge badge--easy">Easy</span></div>
+      <div class="meta-row"><span class="meta-label">Acceptance</span><span class="meta-value">~54%</span></div>
+      <div class="meta-row"><span class="meta-label">Topic</span><span class="meta-value">Sliding Window</span></div>
+      <div class="meta-row"><span class="meta-label">Optimal Time</span><span class="meta-value text-mono">O(n)</span></div>
+      <div class="meta-row"><span class="meta-label">Optimal Space</span><span class="meta-value text-mono">O(1)</span></div>
+      <div class="meta-row">
+        <span class="meta-label">Companies</span>
+        <div style="display:flex;gap:4px;flex-wrap:wrap;">
+          <span class="badge badge--topic" style="font-size:0.65rem;">Amazon</span>
+          <span class="badge badge--topic" style="font-size:0.65rem;">Goldman</span>
+          <span class="badge badge--topic" style="font-size:0.65rem;">Facebook</span>
+        </div>
+      </div>
+    </div>
+    <div class="toc-card">
+      <div class="toc-header">On this page</div>
+      <div id="toc-container"></div>
+    </div>
+  </aside>
+
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-logo">Code<span>Path</span></div>
+      <p>Written DSA prep. Free forever.</p>
+    </div>
+    <div class="footer-col"><h5>Learn</h5><ul><li><a href="index.html#practice">Practice</a></li></ul></div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 CodePath · Free forever</span>
+    <span>Made with ♥ for every engineer</span>
+  </div>
+</footer>
+
+<script>
+'use strict';
+const SLUG = 'best-time-to-buy-stock';
+const Progress = (() => {
+  const KEY = 'cp_progress';
+  function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch { return {}; } }
+  function save(d) { try { localStorage.setItem(KEY, JSON.stringify(d)); } catch {} }
+  function markSolved(s) { const d = load(); d[s] = { status:'solved', ts:Date.now() }; save(d); }
+  function clear(s) { const d = load(); delete d[s]; save(d); }
+  function getStatus(s) { return (load()[s] || {}).status || null; }
+  function solvedCount() { return Object.values(load()).filter(v => v.status === 'solved').length; }
+  return { markSolved, clear, getStatus, solvedCount };
+})();
+function toggleSolved() {
+  const btn = document.getElementById('solve-btn'), icon = document.getElementById('solve-icon'), text = document.getElementById('solve-text');
+  if (Progress.getStatus(SLUG) === 'solved') {
+    Progress.clear(SLUG); btn.classList.remove('solved'); icon.textContent = '○'; text.textContent = 'Mark as Solved';
+  } else {
+    Progress.markSolved(SLUG); btn.classList.add('solved'); icon.textContent = '✓'; text.textContent = 'Solved!';
+  }
+  const sc = document.getElementById('solved-counter'); if (sc) sc.textContent = Progress.solvedCount();
+}
+document.querySelectorAll('.approach-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.approach-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active'); document.getElementById(tab.dataset.tab).classList.add('active');
+  });
+});
+document.querySelectorAll('.copy-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const code = btn.closest('.code-block').querySelector('code');
+    navigator.clipboard.writeText(code.textContent).then(() => { btn.textContent = 'Copied!'; setTimeout(() => btn.textContent = 'Copy', 1800); });
+  });
+});
+window.addEventListener('scroll', () => {
+  const bar = document.getElementById('reading-bar');
+  if (bar) bar.style.width = Math.min(100, (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100) + '%';
+}, { passive: true });
+document.addEventListener('DOMContentLoaded', () => {
+  const content = document.getElementById('article-content'), container = document.getElementById('toc-container');
+  if (content && container) {
+    const ul = document.createElement('ul'); ul.className = 'toc-list';
+    content.querySelectorAll('h2').forEach(h => {
+      const li = document.createElement('li'), a = document.createElement('a');
+      a.href = '#' + h.id; a.textContent = h.textContent;
+      a.addEventListener('click', e => { e.preventDefault(); h.scrollIntoView({ behavior:'smooth' }); });
+      li.appendChild(a); ul.appendChild(li);
+    });
+    container.appendChild(ul);
+  }
+  const sc = document.getElementById('solved-counter'); if (sc) sc.textContent = Progress.solvedCount();
+  if (Progress.getStatus(SLUG) === 'solved') {
+    const btn = document.getElementById('solve-btn'), icon = document.getElementById('solve-icon'), text = document.getElementById('solve-text');
+    if (btn) { btn.classList.add('solved'); icon.textContent = '✓'; text.textContent = 'Solved!'; }
+  }
+});
+</script>
+</body>
+</html>

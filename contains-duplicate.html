@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contains Duplicate — Full Editorial | CodePath</title>
+  <meta name="description" content="Deep written editorial for Contains Duplicate (#217). Three approaches: brute force O(n²), sort O(n log n), and HashSet O(n). Includes the 'seen set' pattern, dry run, edge cases, and follow-up questions.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,900&family=JetBrains+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="editorial.css">
+</head>
+<body>
+<div id="reading-bar"></div>
+
+<nav class="site-nav">
+  <a class="nav-logo" href="index.html">Code<span>Path</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html#practice">Practice</a></li>
+    <li><a href="index.html#why">Why Written?</a></li>
+    <li><a href="#" style="color:var(--muted);font-size:0.82rem;">✓ <span id="solved-counter">0</span> solved</a></li>
+    <li><a href="index.html#practice" class="nav-cta">Back to Practice →</a></li>
+  </ul>
+</nav>
+
+<div class="editorial-layout">
+
+  <!-- MAIN ARTICLE -->
+  <article>
+    <div class="article-header">
+      <div class="article-breadcrumb">
+        <a href="index.html#practice">Practice</a>
+        <span>›</span>
+        <span>Arrays &amp; Hashing</span>
+        <span>›</span>
+        <span>Contains Duplicate</span>
+      </div>
+
+      <h1 class="article-title">#217. Contains Duplicate</h1>
+
+      <div class="article-meta">
+        <span class="badge badge--easy">Easy</span>
+        <span class="badge badge--topic">Arrays</span>
+        <span class="badge badge--topic">Hashing</span>
+      </div>
+
+      <div class="article-stats">
+        <span>⏱ 4 min read</span>
+        <span>📐 3 approaches</span>
+        <span>🏢 Amazon · Apple · Google</span>
+        <span>✅ ~61% acceptance</span>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <button class="solve-btn" id="solve-btn" onclick="toggleSolved()">
+          <span id="solve-icon">○</span>
+          <span id="solve-text">Mark as Solved</span>
+        </button>
+        <a href="https://leetcode.com/problems/contains-duplicate/" target="_blank" rel="noopener"
+           class="btn btn--outline" style="font-size:0.82rem;padding:8px 14px;">
+          Try on LeetCode ↗
+        </a>
+      </div>
+    </div>
+
+    <div class="article-content" id="article-content">
+
+      <h2 id="problem">Problem Statement</h2>
+
+      <p>Given an integer array <code>nums</code>, return <em><code>true</code> if any value appears <strong>at least twice</strong></em> in the array, and <code>false</code> if every element is distinct.</p>
+
+      <div class="callout">
+        <p><strong>Example 1:</strong><br>
+        Input: <code>nums = [1,2,3,1]</code><br>
+        Output: <code>true</code> — the value 1 appears at index 0 and index 3.</p>
+      </div>
+
+      <div class="callout">
+        <p><strong>Example 2:</strong><br>
+        Input: <code>nums = [1,2,3,4]</code><br>
+        Output: <code>false</code> — all values are distinct.</p>
+      </div>
+
+      <div class="callout warning">
+        <p><strong>Constraints:</strong> 1 ≤ nums.length ≤ 10⁵ · −10⁹ ≤ nums[i] ≤ 10⁹</p>
+      </div>
+
+      <h2 id="intuition">Intuition — Building the Mental Model</h2>
+
+      <p>Before writing a single line of code, ask yourself: <em>what does it mean for a duplicate to exist?</em></p>
+
+      <p>A duplicate simply means a value you've seen <strong>somewhere earlier in the array</strong> shows up again. That's all. You don't care about positions, counts, or order — just <em>has this value appeared before?</em></p>
+
+      <div class="insight">
+        <div class="insight-label">The Karpathy Reframe</div>
+        <p>Don't think "find a duplicate pair." Think "maintain a memory of what you've seen. The moment you encounter something in memory — stop, return true." This single reframe gives you the optimal algorithm immediately.</p>
+      </div>
+
+      <p>A <strong>set</strong> is exactly "memory of things seen" — it stores unique values, ignores duplicates, and answers "have I seen X before?" in O(1). You iterate once, you're done.</p>
+
+      <p>This is the first of many problems where a set/map transforms O(n²) to O(n). Master this pattern here — you'll use it in Two Sum, Longest Consecutive Sequence, Group Anagrams, and beyond.</p>
+
+      <h2 id="approaches">All 3 Approaches</h2>
+
+      <table class="complexity-table">
+        <thead>
+          <tr>
+            <th>Approach</th>
+            <th>Time</th>
+            <th>Space</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Brute Force (nested loops)</td>
+            <td>O(n²)</td>
+            <td>O(1)</td>
+            <td>Compare every pair. Never do this in interviews.</td>
+          </tr>
+          <tr>
+            <td>Sort then compare neighbors</td>
+            <td>O(n log n)</td>
+            <td>O(1) or O(n)</td>
+            <td>If sorted, duplicates are adjacent. Elegant but modifies input.</td>
+          </tr>
+          <tr class="best">
+            <td>HashSet — One Pass ★ Best</td>
+            <td>O(n)</td>
+            <td>O(n)</td>
+            <td>Single scan, O(1) lookup per element.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="approach-tabs">
+        <div class="approach-tab active" data-tab="bf">1. Brute Force</div>
+        <div class="approach-tab" data-tab="sort">2. Sort</div>
+        <div class="approach-tab" data-tab="set">3. HashSet ★</div>
+      </div>
+
+      <!-- BRUTE FORCE -->
+      <div class="tab-panel active" id="bf">
+        <h3>Approach 1 — Brute Force</h3>
+        <p>For every element <code>nums[i]</code>, scan every later element <code>nums[j]</code> and check if they're equal. O(n²) — never mention this as your solution in an interview unless asked.</p>
+
+        <div class="code-block">
+          <div class="code-header">
+            <span class="code-lang">Python</span>
+            <button class="copy-btn">Copy</button>
+          </div>
+          <pre><code><span class="c-kw">def</span> <span class="c-fn">containsDuplicate</span>(nums):
+    n = len(nums)
+    <span class="c-kw">for</span> i <span class="c-kw">in</span> <span class="c-fn">range</span>(n):
+        <span class="c-kw">for</span> j <span class="c-kw">in</span> <span class="c-fn">range</span>(i <span class="c-op">+</span> <span class="c-num">1</span>, n):
+            <span class="c-kw">if</span> nums[i] <span class="c-op">==</span> nums[j]:
+                <span class="c-kw">return</span> <span class="c-kw">True</span>
+    <span class="c-kw">return</span> <span class="c-kw">False</span></code></pre>
+        </div>
+        <p><strong>Complexity:</strong> Time O(n²) · Space O(1). Too slow for n = 10⁵.</p>
+      </div>
+
+      <!-- SORT -->
+      <div class="tab-panel" id="sort">
+        <h3>Approach 2 — Sort then Compare Neighbors</h3>
+        <p>After sorting, any duplicate values must be <em>adjacent</em>. One scan after sorting is enough.</p>
+
+        <div class="insight">
+          <div class="insight-label">Why this works</div>
+          <p>Sorting groups identical values together. If any value repeats, it and its copy become neighbors. One forward scan catches any identical adjacent pair.</p>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header">
+            <span class="code-lang">Python</span>
+            <button class="copy-btn">Copy</button>
+          </div>
+          <pre><code><span class="c-kw">def</span> <span class="c-fn">containsDuplicate</span>(nums):
+    nums.<span class="c-fn">sort</span>()          <span class="c-cm"># O(n log n) — modifies original</span>
+    <span class="c-kw">for</span> i <span class="c-kw">in</span> <span class="c-fn">range</span>(<span class="c-num">1</span>, len(nums)):
+        <span class="c-kw">if</span> nums[i] <span class="c-op">==</span> nums[i <span class="c-op">-</span> <span class="c-num">1</span>]:
+            <span class="c-kw">return</span> <span class="c-kw">True</span>
+    <span class="c-kw">return</span> <span class="c-kw">False</span></code></pre>
+        </div>
+        <p><strong>Complexity:</strong> Time O(n log n) · Space O(1) with in-place sort, but note it <strong>mutates</strong> the input array. Mention this tradeoff in interviews.</p>
+      </div>
+
+      <!-- HASHSET -->
+      <div class="tab-panel" id="set">
+        <h3>Approach 3 — HashSet (One Pass) ★ Optimal</h3>
+        <p>Maintain a set of values seen so far. For each element: if it's in the set, we found a duplicate — return <code>True</code>. Otherwise, add it to the set and continue.</p>
+
+        <div class="code-block">
+          <div class="code-header">
+            <span class="code-lang">Python</span>
+            <button class="copy-btn">Copy</button>
+          </div>
+          <pre><code><span class="c-kw">def</span> <span class="c-fn">containsDuplicate</span>(nums):
+    seen = <span class="c-fn">set</span>()
+    <span class="c-kw">for</span> n <span class="c-kw">in</span> nums:
+        <span class="c-kw">if</span> n <span class="c-kw">in</span> seen:
+            <span class="c-kw">return</span> <span class="c-kw">True</span>
+        seen.<span class="c-fn">add</span>(n)
+    <span class="c-kw">return</span> <span class="c-kw">False</span>
+
+<span class="c-cm"># One-liner (same logic, less readable):</span>
+<span class="c-kw">def</span> <span class="c-fn">containsDuplicate</span>(nums):
+    <span class="c-kw">return</span> len(nums) <span class="c-op">!=</span> len(<span class="c-fn">set</span>(nums))</code></pre>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header">
+            <span class="code-lang">Java</span>
+            <button class="copy-btn">Copy</button>
+          </div>
+          <pre><code><span class="c-kw">public</span> <span class="c-type">boolean</span> <span class="c-fn">containsDuplicate</span>(<span class="c-type">int</span>[] nums) {
+    Set&lt;<span class="c-type">Integer</span>&gt; seen = <span class="c-kw">new</span> HashSet&lt;&gt;();
+    <span class="c-kw">for</span> (<span class="c-type">int</span> n : nums) {
+        <span class="c-kw">if</span> (!seen.<span class="c-fn">add</span>(n)) <span class="c-cm">// add() returns false if already present</span>
+            <span class="c-kw">return</span> <span class="c-kw">true</span>;
+    }
+    <span class="c-kw">return</span> <span class="c-kw">false</span>;
+}</code></pre>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header">
+            <span class="code-lang">C++</span>
+            <button class="copy-btn">Copy</button>
+          </div>
+          <pre><code><span class="c-type">bool</span> <span class="c-fn">containsDuplicate</span>(vector&lt;<span class="c-type">int</span>&gt;&amp; nums) {
+    unordered_set&lt;<span class="c-type">int</span>&gt; seen;
+    <span class="c-kw">for</span> (<span class="c-type">int</span> n : nums) {
+        <span class="c-kw">if</span> (seen.<span class="c-fn">count</span>(n)) <span class="c-kw">return</span> <span class="c-kw">true</span>;
+        seen.<span class="c-fn">insert</span>(n);
+    }
+    <span class="c-kw">return</span> <span class="c-kw">false</span>;
+}</code></pre>
+        </div>
+
+        <p><strong>Complexity:</strong> Time O(n) · Space O(n). One pass through the array. This is the answer to give in interviews.</p>
+      </div>
+
+      <h2 id="dry-run">Dry Run — Tracing the HashSet Solution</h2>
+
+      <p>Input: <code>nums = [1, 2, 3, 1]</code></p>
+
+      <table class="dry-run-table">
+        <thead>
+          <tr><th>Step</th><th>n</th><th>seen (before)</th><th>n in seen?</th><th>Action</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>1</td><td>{}</td><td>No</td><td>Add 1 → seen = {1}</td></tr>
+          <tr><td>2</td><td>2</td><td>{1}</td><td>No</td><td>Add 2 → seen = {1,2}</td></tr>
+          <tr><td>3</td><td>3</td><td>{1,2}</td><td>No</td><td>Add 3 → seen = {1,2,3}</td></tr>
+          <tr class="highlight"><td>4</td><td>1</td><td>{1,2,3}</td><td><strong>Yes!</strong></td><td>Return <strong>True</strong> ✓</td></tr>
+        </tbody>
+      </table>
+
+      <p>Input: <code>nums = [1, 2, 3, 4]</code> — all distinct, loop completes, return <code>False</code>.</p>
+
+      <h2 id="edge-cases">Edge Cases to Test</h2>
+
+      <div class="callout">
+        <p><strong>1. Single element:</strong> <code>[1]</code> → <code>False</code>. No pair can exist with one element.</p>
+      </div>
+      <div class="callout">
+        <p><strong>2. All same:</strong> <code>[7,7,7,7]</code> → <code>True</code>. Caught at step 2.</p>
+      </div>
+      <div class="callout">
+        <p><strong>3. Duplicate at the very end:</strong> <code>[1,2,3,4,5,1]</code> → <code>True</code>. The algorithm still finds it — it scans all the way through.</p>
+      </div>
+      <div class="callout warning">
+        <p><strong>4. Negative numbers:</strong> <code>[-1, -2, -3, -1]</code> → <code>True</code>. HashSets handle negative integer keys perfectly. Don't forget to test these.</p>
+      </div>
+
+      <h2 id="follow-up">Interview Follow-Up Questions</h2>
+
+      <ul class="followup-list">
+        <li>
+          <span class="fq-icon">❓</span>
+          <div><strong>What if you couldn't use extra space?</strong> Use the sort approach. O(n log n) time, O(1) extra space (in-place sort). Mention that it mutates the array.</div>
+        </li>
+        <li>
+          <span class="fq-icon">❓</span>
+          <div><strong>What if you need to return the duplicate value itself (not just true/false)?</strong> With the set approach, when you detect <code>n in seen</code>, just return <code>n</code> instead of <code>True</code>.</div>
+        </li>
+        <li>
+          <span class="fq-icon">❓</span>
+          <div><strong>Contains Duplicate II (#219) — what if duplicates must be within k positions of each other?</strong> Use a sliding window set of size k. Add new elements, remove elements more than k steps old. O(n) time.</div>
+        </li>
+        <li>
+          <span class="fq-icon">❓</span>
+          <div><strong>Contains Duplicate III (#220) — what if values must be within t of each other?</strong> This is much harder — requires a sorted data structure (TreeSet in Java) or bucket sort trick. O(n log k) time.</div>
+        </li>
+      </ul>
+
+      <h2 id="pattern">The Pattern — Where Else Does This Apply?</h2>
+
+      <div class="insight">
+        <div class="insight-label">Pattern: "Have I Seen This Before?"</div>
+        <p>Any time you need O(1) membership queries — "does X exist in my collection of seen items?" — reach for a <strong>HashSet</strong>. This pattern powers: Two Sum (hash map for complement lookup), Longest Consecutive Sequence (set membership to skip non-starts), Valid Anagram (frequency counting), and First Missing Positive. The common thread: replace O(n) scan with O(1) lookup by trading space for time.</p>
+      </div>
+
+      <p>Related problems to solve next:</p>
+      <ul>
+        <li><strong>#1</strong> — Two Sum (same pattern but need the index too → use HashMap)</li>
+        <li><strong>#219</strong> — Contains Duplicate II (windowed version)</li>
+        <li><strong>#128</strong> — Longest Consecutive Sequence (set membership for O(n) solution)</li>
+        <li><strong>#49</strong> — Group Anagrams (HashMap with canonical key)</li>
+      </ul>
+
+      <div class="prev-next">
+        <a href="two-sum.html" class="nav-problem prev">
+          <div class="nav-dir">← Previous</div>
+          <div class="nav-name">#1. Two Sum</div>
+        </a>
+        <a href="product-except-self.html" class="nav-problem next">
+          <div class="nav-dir">Next →</div>
+          <div class="nav-name">#238. Product of Array Except Self</div>
+        </a>
+      </div>
+
+    </div>
+  </article>
+
+  <!-- SIDEBAR -->
+  <aside class="article-sidebar">
+    <div class="meta-card">
+      <div class="meta-row"><span class="meta-label">Difficulty</span><span class="badge badge--easy">Easy</span></div>
+      <div class="meta-row"><span class="meta-label">Acceptance</span><span class="meta-value">~61%</span></div>
+      <div class="meta-row"><span class="meta-label">Topic</span><span class="meta-value">Arrays &amp; Hashing</span></div>
+      <div class="meta-row"><span class="meta-label">Optimal Time</span><span class="meta-value text-mono">O(n)</span></div>
+      <div class="meta-row"><span class="meta-label">Optimal Space</span><span class="meta-value text-mono">O(n)</span></div>
+      <div class="meta-row">
+        <span class="meta-label">Companies</span>
+        <div style="display:flex;gap:4px;flex-wrap:wrap;">
+          <span class="badge badge--topic" style="font-size:0.65rem;">Amazon</span>
+          <span class="badge badge--topic" style="font-size:0.65rem;">Apple</span>
+          <span class="badge badge--topic" style="font-size:0.65rem;">Google</span>
+        </div>
+      </div>
+    </div>
+    <div class="toc-card">
+      <div class="toc-header">On this page</div>
+      <div id="toc-container"></div>
+    </div>
+  </aside>
+
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-logo">Code<span>Path</span></div>
+      <p>Written DSA prep for engineers who prefer reading over watching. Free forever.</p>
+    </div>
+    <div class="footer-col">
+      <h5>Learn</h5>
+      <ul>
+        <li><a href="index.html#practice">Practice</a></li>
+        <li><a href="index.html#why">Why Written?</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 CodePath · Free forever · Open source</span>
+    <span>Made with ♥ for every engineer</span>
+  </div>
+</footer>
+
+<script>
+'use strict';
+const SLUG = 'contains-duplicate';
+
+// ── PROGRESS ──────────────────────────────
+const Progress = (() => {
+  const KEY = 'cp_progress';
+  function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch { return {}; } }
+  function save(d) { try { localStorage.setItem(KEY, JSON.stringify(d)); } catch {} }
+  function markSolved(s) { const d = load(); d[s] = { status:'solved', ts:Date.now() }; save(d); }
+  function clear(s) { const d = load(); delete d[s]; save(d); }
+  function getStatus(s) { return (load()[s] || {}).status || null; }
+  function solvedCount() { return Object.values(load()).filter(v => v.status === 'solved').length; }
+  return { markSolved, clear, getStatus, solvedCount };
+})();
+
+// ── SOLVE BUTTON ──────────────────────────
+function toggleSolved() {
+  const btn = document.getElementById('solve-btn');
+  const icon = document.getElementById('solve-icon');
+  const text = document.getElementById('solve-text');
+  if (Progress.getStatus(SLUG) === 'solved') {
+    Progress.clear(SLUG);
+    btn.classList.remove('solved');
+    icon.textContent = '○'; text.textContent = 'Mark as Solved';
+  } else {
+    Progress.markSolved(SLUG);
+    btn.classList.add('solved');
+    icon.textContent = '✓'; text.textContent = 'Solved!';
+  }
+  const sc = document.getElementById('solved-counter');
+  if (sc) sc.textContent = Progress.solvedCount();
+}
+
+// ── APPROACH TABS ─────────────────────────
+document.querySelectorAll('.approach-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.approach-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById(tab.dataset.tab).classList.add('active');
+  });
+});
+
+// ── COPY BUTTONS ──────────────────────────
+document.querySelectorAll('.copy-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const code = btn.closest('.code-block').querySelector('code');
+    navigator.clipboard.writeText(code.textContent).then(() => {
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = 'Copy', 1800);
+    });
+  });
+});
+
+// ── READING BAR ───────────────────────────
+window.addEventListener('scroll', () => {
+  const bar = document.getElementById('reading-bar');
+  if (bar) bar.style.width = Math.min(100, (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100) + '%';
+}, { passive: true });
+
+// ── TOC ───────────────────────────────────
+function buildTOC() {
+  const content = document.getElementById('article-content');
+  const container = document.getElementById('toc-container');
+  if (!content || !container) return;
+  const headings = content.querySelectorAll('h2');
+  const ul = document.createElement('ul');
+  ul.className = 'toc-list';
+  headings.forEach((h, i) => {
+    if (!h.id) h.id = 'h' + i;
+    const li = document.createElement('li');
+    const a = document.createElement('a');
+    a.href = '#' + h.id; a.textContent = h.textContent;
+    a.addEventListener('click', e => { e.preventDefault(); h.scrollIntoView({ behavior: 'smooth' }); });
+    li.appendChild(a); ul.appendChild(li);
+  });
+  container.appendChild(ul);
+}
+
+// ── INIT ──────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  buildTOC();
+  const sc = document.getElementById('solved-counter');
+  if (sc) sc.textContent = Progress.solvedCount();
+  if (Progress.getStatus(SLUG) === 'solved') {
+    const btn = document.getElementById('solve-btn');
+    const icon = document.getElementById('solve-icon');
+    const text = document.getElementById('solve-text');
+    if (btn) { btn.classList.add('solved'); icon.textContent = '✓'; text.textContent = 'Solved!'; }
+  }
+});
+</script>
+</body>
+</html>

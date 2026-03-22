@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Valid Parentheses — Full Editorial | CodePath</title>
+  <meta name="description" content="Full editorial for Valid Parentheses (#20). The stack mirrors open brackets you're waiting to close. O(n) time, O(n) space. Learn the bracket matching pattern used in compilers, JSON parsers, and HTML validators.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,900&family=JetBrains+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="editorial.css">
+</head>
+<body>
+<div id="reading-bar"></div>
+
+<nav class="site-nav">
+  <a class="nav-logo" href="index.html">Code<span>Path</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html#practice">Practice</a></li>
+    <li><a href="index.html#why">Why Written?</a></li>
+    <li><a href="#" style="color:var(--muted);font-size:0.82rem;">✓ <span id="solved-counter">0</span> solved</a></li>
+    <li><a href="index.html#practice" class="nav-cta">Back to Practice →</a></li>
+  </ul>
+</nav>
+
+<div class="editorial-layout">
+
+  <article>
+    <div class="article-header">
+      <div class="article-breadcrumb">
+        <a href="index.html#practice">Practice</a>
+        <span>›</span>
+        <span>Stack</span>
+        <span>›</span>
+        <span>Valid Parentheses</span>
+      </div>
+
+      <h1 class="article-title">#20. Valid Parentheses</h1>
+
+      <div class="article-meta">
+        <span class="badge badge--easy">Easy</span>
+        <span class="badge badge--topic">Stack</span>
+        <span class="badge badge--topic">String</span>
+      </div>
+
+      <div class="article-stats">
+        <span>⏱ 5 min read</span>
+        <span>📐 1 optimal approach</span>
+        <span>🏢 Google · Amazon · Meta · Microsoft</span>
+        <span>✅ ~40% acceptance</span>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <button class="solve-btn" id="solve-btn" onclick="toggleSolved()">
+          <span id="solve-icon">○</span>
+          <span id="solve-text">Mark as Solved</span>
+        </button>
+        <a href="https://leetcode.com/problems/valid-parentheses/" target="_blank" rel="noopener"
+           class="btn btn--outline" style="font-size:0.82rem;padding:8px 14px;">
+          Try on LeetCode ↗
+        </a>
+      </div>
+    </div>
+
+    <div class="article-content" id="article-content">
+
+      <h2 id="problem">Problem Statement</h2>
+
+      <p>Given a string <code>s</code> containing just the characters <code>'('</code>, <code>')'</code>, <code>'{'</code>, <code>'}'</code>, <code>'['</code> and <code>']'</code>, determine if the input string is <strong>valid</strong>.</p>
+
+      <p>An input string is valid if:</p>
+      <ol>
+        <li>Open brackets must be closed by the <strong>same type</strong> of brackets.</li>
+        <li>Open brackets must be closed in the <strong>correct order</strong>.</li>
+        <li>Every close bracket has a corresponding open bracket of the <strong>same type</strong>.</li>
+      </ol>
+
+      <div class="callout">
+        <p><strong>Example 1:</strong> <code>s = "()"</code> → <code>true</code></p>
+      </div>
+      <div class="callout">
+        <p><strong>Example 2:</strong> <code>s = "()[]{}"</code> → <code>true</code></p>
+      </div>
+      <div class="callout">
+        <p><strong>Example 3:</strong> <code>s = "(]"</code> → <code>false</code></p>
+      </div>
+      <div class="callout warning">
+        <p><strong>Constraints:</strong> 1 ≤ s.length ≤ 10⁴ · s contains only <code>()[]</code> characters.</p>
+      </div>
+
+      <h2 id="intuition">Intuition — The Stack as a "Memory of Open Brackets"</h2>
+
+      <p>This problem is simpler than it looks once you find the right mental model. Ask yourself: <em>when you encounter a closing bracket like <code>)</code>, what's the only acceptable open bracket it can close?</em></p>
+
+      <p>It must close the <strong>most recently opened</strong> bracket. That's the key. Order matters — <code>([)]</code> is invalid because the most recently opened bracket is <code>[</code>, but <code>)</code> is trying to close it.</p>
+
+      <div class="insight">
+        <div class="insight-label">The Stack as a Mind Map</div>
+        <p>A <strong>stack</strong> is exactly "the most recently opened bracket, at the top." When you see an open bracket, push it — you're saying "I'm waiting for this to close later." When you see a close bracket, pop from the stack — "this must close the most recent open bracket." If the types don't match, invalid. If the stack is empty when you pop, invalid. If the stack is non-empty at the end, invalid.</p>
+      </div>
+
+      <p>This is one of the most important patterns in CS. Stacks are used everywhere when you need to match things in LIFO order: compilers (syntax validation), HTML parsers (tag matching), expression evaluators, undo/redo systems. Master this here.</p>
+
+      <h2 id="approaches">The One Optimal Approach</h2>
+
+      <table class="complexity-table">
+        <thead>
+          <tr><th>Approach</th><th>Time</th><th>Space</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr class="best">
+            <td>Stack ★</td>
+            <td>O(n)</td>
+            <td>O(n)</td>
+            <td>One scan. Push open brackets, pop and validate on close. Optimal.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="approach-tabs">
+        <div class="approach-tab active" data-tab="stack">1. Stack ★</div>
+      </div>
+
+      <div class="tab-panel active" id="stack">
+        <h3>Stack Approach — The Clear, Fast Solution</h3>
+
+        <p>Use a hashmap to map each closing bracket to its corresponding opener. When you encounter a closing bracket, check: does the top of the stack hold the expected open bracket?</p>
+
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">Python</span><button class="copy-btn">Copy</button></div>
+          <pre><code><span class="c-kw">def</span> <span class="c-fn">isValid</span>(s):
+    stack = []
+    close_to_open = {
+        <span class="c-str">')'</span>: <span class="c-str">'('</span>,
+        <span class="c-str">']'</span>: <span class="c-str">'['</span>,
+        <span class="c-str">'}'</span>: <span class="c-str">'{'</span>
+    }
+
+    <span class="c-kw">for</span> char <span class="c-kw">in</span> s:
+        <span class="c-kw">if</span> char <span class="c-kw">in</span> close_to_open:
+            <span class="c-cm"># It's a closing bracket — pop and validate</span>
+            <span class="c-kw">if</span> <span class="c-kw">not</span> stack <span class="c-kw">or</span> stack[<span class="c-op">-</span><span class="c-num">1</span>] <span class="c-op">!=</span> close_to_open[char]:
+                <span class="c-kw">return</span> <span class="c-kw">False</span>
+            stack.<span class="c-fn">pop</span>()
+        <span class="c-kw">else</span>:
+            <span class="c-cm"># It's an opening bracket — remember it</span>
+            stack.<span class="c-fn">append</span>(char)
+
+    <span class="c-kw">return</span> len(stack) <span class="c-op">==</span> <span class="c-num">0</span>  <span class="c-cm"># valid iff all brackets were closed</span></code></pre>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">Java</span><button class="copy-btn">Copy</button></div>
+          <pre><code><span class="c-kw">public</span> <span class="c-type">boolean</span> <span class="c-fn">isValid</span>(String s) {
+    Deque&lt;<span class="c-type">Character</span>&gt; stack = <span class="c-kw">new</span> ArrayDeque&lt;&gt;();
+    Map&lt;<span class="c-type">Character</span>, <span class="c-type">Character</span>&gt; map = Map.<span class="c-fn">of</span>(
+        <span class="c-str">')'</span>, <span class="c-str">'('</span>, <span class="c-str">']'</span>, <span class="c-str">'['</span>, <span class="c-str">'}'</span>, <span class="c-str">'{'</span>
+    );
+    <span class="c-kw">for</span> (<span class="c-type">char</span> c : s.<span class="c-fn">toCharArray</span>()) {
+        <span class="c-kw">if</span> (map.<span class="c-fn">containsKey</span>(c)) {
+            <span class="c-kw">if</span> (stack.<span class="c-fn">isEmpty</span>() || stack.<span class="c-fn">peek</span>() != map.<span class="c-fn">get</span>(c))
+                <span class="c-kw">return</span> <span class="c-kw">false</span>;
+            stack.<span class="c-fn">pop</span>();
+        } <span class="c-kw">else</span> {
+            stack.<span class="c-fn">push</span>(c);
+        }
+    }
+    <span class="c-kw">return</span> stack.<span class="c-fn">isEmpty</span>();
+}</code></pre>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">C++</span><button class="copy-btn">Copy</button></div>
+          <pre><code><span class="c-type">bool</span> <span class="c-fn">isValid</span>(string s) {
+    stack&lt;<span class="c-type">char</span>&gt; stk;
+    unordered_map&lt;<span class="c-type">char</span>,<span class="c-type">char</span>&gt; m = {{<span class="c-str">')'</span>,<span class="c-str">'('</span>},{<span class="c-str">']'</span>,<span class="c-str">'['</span>},{<span class="c-str">'}'</span>,<span class="c-str">'{'</span>}};
+    <span class="c-kw">for</span> (<span class="c-type">char</span> c : s) {
+        <span class="c-kw">if</span> (m.<span class="c-fn">count</span>(c)) {
+            <span class="c-kw">if</span> (stk.<span class="c-fn">empty</span>() || stk.<span class="c-fn">top</span>() != m[c]) <span class="c-kw">return</span> <span class="c-kw">false</span>;
+            stk.<span class="c-fn">pop</span>();
+        } <span class="c-kw">else</span> stk.<span class="c-fn">push</span>(c);
+    }
+    <span class="c-kw">return</span> stk.<span class="c-fn">empty</span>();
+}</code></pre>
+        </div>
+        <p><strong>Complexity:</strong> Time O(n) · Space O(n) for the stack. Each character is processed exactly once.</p>
+      </div>
+
+      <h2 id="dry-run">Dry Run — s = "([{}])"</h2>
+
+      <table class="dry-run-table">
+        <thead><tr><th>Char</th><th>Type</th><th>Stack (after)</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td>(</td><td>Open</td><td>['(']</td><td>Push '('</td></tr>
+          <tr><td>[</td><td>Open</td><td>['(', '[']</td><td>Push '['</td></tr>
+          <tr><td>{</td><td>Open</td><td>['(', '[', '{']</td><td>Push '{'</td></tr>
+          <tr><td>}</td><td>Close</td><td>['(', '[']</td><td>Top='{' matches '}' → pop ✓</td></tr>
+          <tr><td>]</td><td>Close</td><td>['(']</td><td>Top='[' matches ']' → pop ✓</td></tr>
+          <tr class="highlight"><td>)</td><td>Close</td><td>[]</td><td>Top='(' matches ')' → pop ✓ Stack empty → <strong>True</strong></td></tr>
+        </tbody>
+      </table>
+
+      <p>Trace for invalid <code>"(]"</code>:</p>
+      <table class="dry-run-table">
+        <thead><tr><th>Char</th><th>Stack</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td>(</td><td>['(']</td><td>Push '('</td></tr>
+          <tr class="highlight"><td>]</td><td>—</td><td>close_to_open[']']='{' but top='(' ≠ '[' → return <strong>False</strong> ✗</td></tr>
+        </tbody>
+      </table>
+
+      <h2 id="edge-cases">Edge Cases to Test</h2>
+
+      <div class="callout warning">
+        <p><strong>1. Close bracket with empty stack:</strong> <code>"]"</code> → <code>false</code>. Stack is empty when we try to pop — handled by the <code>not stack</code> check.</p>
+      </div>
+      <div class="callout warning">
+        <p><strong>2. Odd length:</strong> Any string of odd length MUST be invalid — you can't pair all brackets. A quick early return: <code>if len(s) % 2 != 0: return False</code>. Optional optimization.</p>
+      </div>
+      <div class="callout warning">
+        <p><strong>3. All opens, no closes:</strong> <code>"((("</code> → <code>false</code>. Loop ends. Stack = ['(','(','(']. <code>len(stack) != 0</code> → False. ✓</p>
+      </div>
+      <div class="callout">
+        <p><strong>4. Nested, all valid:</strong> <code>"{[()]}"</code> → <code>true</code>. Perfect nesting, each bracket matches its corresponding opener.</p>
+      </div>
+
+      <h2 id="follow-up">Interview Follow-Up Questions</h2>
+
+      <ul class="followup-list">
+        <li>
+          <span class="fq-icon">❓</span>
+          <div><strong>Min Stack (#155)?</strong> Maintain a second stack tracking the minimum at each state. O(1) getMin() via the second stack's top.</div>
+        </li>
+        <li>
+          <span class="fq-icon">❓</span>
+          <div><strong>What if the string also contained non-bracket characters?</strong> Simply skip them — only push/pop on bracket characters.</div>
+        </li>
+        <li>
+          <span class="fq-icon">❓</span>
+          <div><strong>Generate All Valid Parentheses (#22)?</strong> Backtracking — at each step, add '(' if open count &lt; n, add ')' if close count &lt; open count.</div>
+        </li>
+        <li>
+          <span class="fq-icon">❓</span>
+          <div><strong>Longest Valid Parentheses (#32)?</strong> DP or stack tracking positions. One of the harder stack problems — builds directly on this intuition.</div>
+        </li>
+      </ul>
+
+      <h2 id="pattern">The Pattern — Stack for Matching &amp; Nesting</h2>
+
+      <div class="insight">
+        <div class="insight-label">Pattern: Stack for LIFO Matching</div>
+        <p>Any time you have elements that <em>must be closed in reverse order of opening</em>, you need a stack. The stack holds "things I'm currently inside" and pops as you exit them. This pattern is used in: Decode String (#394: nested encoding), Largest Rectangle in Histogram (#84: monotonic stack), Daily Temperatures (#739: next greater element), and Evaluate Reverse Polish Notation (#150: operand/operator stack). Valid Parentheses is the simplest and most important entry point into this category.</p>
+      </div>
+
+      <p>Related problems:</p>
+      <ul>
+        <li><strong>#22</strong> — Generate Parentheses (backtracking + balance counting)</li>
+        <li><strong>#739</strong> — Daily Temperatures (monotonic stack — next greater element)</li>
+        <li><strong>#84</strong> — Largest Rectangle in Histogram (monotonic stack)</li>
+        <li><strong>#394</strong> — Decode String (nested stack — string reconstruction)</li>
+      </ul>
+
+      <div class="prev-next">
+        <a href="best-time-to-buy-stock.html" class="nav-problem prev">
+          <div class="nav-dir">← Previous</div>
+          <div class="nav-name">#121. Best Time to Buy Stock</div>
+        </a>
+        <a href="min-stack.html" class="nav-problem next">
+          <div class="nav-dir">Next →</div>
+          <div class="nav-name">#155. Min Stack</div>
+        </a>
+      </div>
+
+    </div>
+  </article>
+
+  <aside class="article-sidebar">
+    <div class="meta-card">
+      <div class="meta-row"><span class="meta-label">Difficulty</span><span class="badge badge--easy">Easy</span></div>
+      <div class="meta-row"><span class="meta-label">Acceptance</span><span class="meta-value">~40%</span></div>
+      <div class="meta-row"><span class="meta-label">Topic</span><span class="meta-value">Stack</span></div>
+      <div class="meta-row"><span class="meta-label">Optimal Time</span><span class="meta-value text-mono">O(n)</span></div>
+      <div class="meta-row"><span class="meta-label">Optimal Space</span><span class="meta-value text-mono">O(n)</span></div>
+      <div class="meta-row">
+        <span class="meta-label">Companies</span>
+        <div style="display:flex;gap:4px;flex-wrap:wrap;">
+          <span class="badge badge--topic" style="font-size:0.65rem;">Google</span>
+          <span class="badge badge--topic" style="font-size:0.65rem;">Amazon</span>
+          <span class="badge badge--topic" style="font-size:0.65rem;">Meta</span>
+        </div>
+      </div>
+    </div>
+    <div class="toc-card">
+      <div class="toc-header">On this page</div>
+      <div id="toc-container"></div>
+    </div>
+  </aside>
+
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-logo">Code<span>Path</span></div>
+      <p>Written DSA prep. Free forever.</p>
+    </div>
+    <div class="footer-col"><h5>Learn</h5><ul><li><a href="index.html#practice">Practice</a></li></ul></div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 CodePath · Free forever</span>
+    <span>Made with ♥ for every engineer</span>
+  </div>
+</footer>
+
+<script>
+'use strict';
+const SLUG = 'valid-parentheses';
+const Progress = (() => {
+  const KEY = 'cp_progress';
+  function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch { return {}; } }
+  function save(d) { try { localStorage.setItem(KEY, JSON.stringify(d)); } catch {} }
+  function markSolved(s) { const d = load(); d[s] = { status:'solved', ts:Date.now() }; save(d); }
+  function clear(s) { const d = load(); delete d[s]; save(d); }
+  function getStatus(s) { return (load()[s] || {}).status || null; }
+  function solvedCount() { return Object.values(load()).filter(v => v.status === 'solved').length; }
+  return { markSolved, clear, getStatus, solvedCount };
+})();
+function toggleSolved() {
+  const btn = document.getElementById('solve-btn'), icon = document.getElementById('solve-icon'), text = document.getElementById('solve-text');
+  if (Progress.getStatus(SLUG) === 'solved') {
+    Progress.clear(SLUG); btn.classList.remove('solved'); icon.textContent = '○'; text.textContent = 'Mark as Solved';
+  } else {
+    Progress.markSolved(SLUG); btn.classList.add('solved'); icon.textContent = '✓'; text.textContent = 'Solved!';
+  }
+  const sc = document.getElementById('solved-counter'); if (sc) sc.textContent = Progress.solvedCount();
+}
+document.querySelectorAll('.approach-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.approach-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active'); document.getElementById(tab.dataset.tab).classList.add('active');
+  });
+});
+document.querySelectorAll('.copy-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const code = btn.closest('.code-block').querySelector('code');
+    navigator.clipboard.writeText(code.textContent).then(() => { btn.textContent = 'Copied!'; setTimeout(() => btn.textContent = 'Copy', 1800); });
+  });
+});
+window.addEventListener('scroll', () => {
+  const bar = document.getElementById('reading-bar');
+  if (bar) bar.style.width = Math.min(100, (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100) + '%';
+}, { passive: true });
+document.addEventListener('DOMContentLoaded', () => {
+  const content = document.getElementById('article-content'), container = document.getElementById('toc-container');
+  if (content && container) {
+    const ul = document.createElement('ul'); ul.className = 'toc-list';
+    content.querySelectorAll('h2').forEach(h => {
+      const li = document.createElement('li'), a = document.createElement('a');
+      a.href = '#' + h.id; a.textContent = h.textContent;
+      a.addEventListener('click', e => { e.preventDefault(); h.scrollIntoView({ behavior:'smooth' }); });
+      li.appendChild(a); ul.appendChild(li);
+    });
+    container.appendChild(ul);
+  }
+  const sc = document.getElementById('solved-counter'); if (sc) sc.textContent = Progress.solvedCount();
+  if (Progress.getStatus(SLUG) === 'solved') {
+    const btn = document.getElementById('solve-btn'), icon = document.getElementById('solve-icon'), text = document.getElementById('solve-text');
+    if (btn) { btn.classList.add('solved'); icon.textContent = '✓'; text.textContent = 'Solved!'; }
+  }
+});
+</script>
+</body>
+</html>
